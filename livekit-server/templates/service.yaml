@@ -4,6 +4,11 @@ metadata:
   name: {{ include "livekit-server.fullname" . }}
   labels:
     {{- include "livekit-server.labels" . | nindent 4 }}
+  {{- if eq .Values.loadBalancer.type "aws" }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  {{- end }}
 spec:
   {{- if eq .Values.loadBalancer.type "alb" }}
   type: NodePort

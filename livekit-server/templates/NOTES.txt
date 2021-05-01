@@ -8,10 +8,13 @@ Primary load balancer has been set up for the primary API endpoint. The followin
   - {{ . }}
   {{- end }}
 
-To determine the load balancer address, run these commands:
-  {{- if eq .Values.loadBalancer.type "alb" }}
+To determine the load balancer address, run:
+  {{ if eq .Values.loadBalancer.type "alb" }}
+kubectl get --namespace {{ .Release.Namespace }} ingress {{ include "livekit-server.fullname" . }}
+  {{ else if eq .Values.loadBalancer.type "aws" }}
+kubectl get --namespace {{ .Release.Namespace }} service {{ include "livekit-server.fullname" . }}
+  {{ end }}
 
-  {{- end }}
 {{- else }}
 Load balancer has been disabled
 {{- end }}

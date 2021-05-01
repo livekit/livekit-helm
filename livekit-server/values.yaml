@@ -28,14 +28,15 @@ nameOverride: ""
 fullnameOverride: ""
 
 loadBalancer:
-  # valid values: disable, alb, aws, gke
+  # valid values: disable, alb, aws
+  # alb supports SSL termination, aws NLBs does not support TLS
   type: disable
   servicePort: 80
   hosts:
-    - chart-example.local
+    - myhost.com
   tls:
     enabled: true
-    # secretName: chart-example-tls
+    # secretName: ""
 
 autoscaling:
   enabled: false
@@ -45,16 +46,14 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # Due to port restrictions, you can run only one instance of LiveKit per physical
+  # node. Because of that, we recommend giving it plenty of resources to work with
   # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #   cpu: 6000m
+  #   memory: 2048Mi
   # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #   cpu: 4000m
+  #   memory: 1024Mi
 
 serviceAccount:
   # Specifies whether a service account should be created
