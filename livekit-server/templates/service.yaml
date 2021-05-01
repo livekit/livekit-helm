@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "livekit-server.fullname" . }}
+  labels:
+    {{- include "livekit-server.labels" . | nindent 4 }}
+spec:
+  {{- if eq .Values.loadBalancer.type "alb" }}
+  type: NodePort
+  {{- else if eq .Values.loadBalancer.type "aws" }}
+  type: LoadBalancer
+  {{- end }}
+  ports:
+    - port: {{ .Values.loadBalancer.servicePort }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "livekit-server.selectorLabels" . | nindent 4 }}

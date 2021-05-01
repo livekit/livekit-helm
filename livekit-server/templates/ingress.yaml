@@ -1,0 +1,48 @@
+{{- if eq .Values.loadBalancer.type "alb" -}}
+{{- $fullName := include "livekit-server.fullname" . -}}
+{{- $svcPort := .Values.loadBalancer.servicePort -}}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "livekit-server.labels" . | nindent 4 }}
+  {{- if eq .Values.loadBalancer.type "alb" }}
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    {{- if .Values.loadBalancer.tls.enabled }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    {{- end }}
+  {{- end }}
+{{- with .Values.loadBalancer }}
+spec:
+  backend:
+    serviceName: {{ $fullName }}
+    servicePort: {{ $svcPort }}
+  {{- if .tls.enabled }}
+  tls:
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      {{- if .tls.secretName }}
+      secretName: {{ .tls.secretName }}
+      {{- end }}
+  {{- end }}
+  rules:
+    {{- range .hosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+    {{- end }}
+{{- end }}
+{{- end }}

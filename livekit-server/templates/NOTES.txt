@@ -1,0 +1,17 @@
+LiveKit server has been deployed. Ensure that the following ports on the nodes are accessible from the internet
+* UDP {{ .Values.livekit.rtc.udp_port }}
+* TCP {{ .Values.livekit.rtc.tcp_port }}
+
+{{- if ne .Values.loadBalancer.type "disable" }}
+Primary load balancer has been set up for the primary API endpoint. The following hosts can now be routed to the load balancer.
+  {{- range .Values.loadBalancer.hosts }}
+  - {{ . }}
+  {{- end }}
+
+To determine the load balancer address, run these commands:
+  {{- if eq .Values.loadBalancer.type "alb" }}
+
+  {{- end }}
+{{- else }}
+Load balancer has been disabled
+{{- end }}

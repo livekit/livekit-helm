@@ -1,0 +1,17 @@
+{{- if ne .Values.loadBalancer.type "disable" }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "livekit-server.fullname" . }}-test-connection"
+  labels:
+    {{- include "livekit-server.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "livekit-server.fullname" . }}:{{ .Values.loadBalancer.servicePort }}']
+  restartPolicy: Never
+{{- end }}
