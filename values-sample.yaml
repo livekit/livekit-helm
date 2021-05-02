@@ -1,0 +1,36 @@
+replicaCount: 1
+
+livekit:
+  # port: 7880
+  log_level: info
+  rtc:
+    use_external_ip: true
+    # default ports used
+  #   udp_port: 7900
+  #   tcp_port: 7901
+  redis:
+    address: <your_redis_address>
+    # db: 0
+    # username:
+    # password:
+  # one or more API key/secret pairs
+  keys:
+    myapikey: "myapisecret"
+
+loadBalancer:
+  # valid values: disable, alb, aws
+  # in order to use alb, aws-ingress-controller must be installed
+  # https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
+  type: alb
+  hosts:
+    - livekit.myhost.com
+  tls:
+    # set to enabled if desired. TLS is only supported with ALB today
+    enabled: true
+
+autoscaling:
+  # set to true to enable autoscaling. when set, ignores replicaCount
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
