@@ -1,0 +1,39 @@
+{{- if .Values.optimizeNetwork -}}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "livekit-server.fullname" . }}-sysctl
+  labels:
+    {{- include "livekit-server.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "livekit-server.name" . }}-sysctl
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "livekit-server.name" . }}-sysctl
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      hostPID: true
+      containers:
+      - name: daemonset
+        image: gcr.io/google-containers/startup-script:v2
+        imagePullPolicy: Always
+        securityContext:
+          privileged: true
+        env:
+        - name: STARTUP_SCRIPT
+          value: |
+            #! /bin/bash
+            set -x
+            sysctl -w vm.max_map_count=262144
+            sysctl -w net.core.somaxconn=1024
+            sysctl -w net.core.netdev_max_backlog=5000
+            sysctl -w net.core.rmem_max=16777216
+            sysctl -w net.core.wmem_max=16777216
+            sysctl -w net.ipv4.tcp_tw_reuse=1
+            sysctl -w fs.inotify.max_user_instances=524288
+            echo "done"
+{{- end }}
