@@ -18,15 +18,20 @@ livekit:
     myapikey: "myapisecret"
 
 loadBalancer:
-  # valid values: disable, alb, aws
+  # create
+  # valid values: disable, alb, aws, gke
   # in order to use alb, aws-ingress-controller must be installed
   # https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
-  type: alb
-  hosts:
-    - livekit.myhost.com
+  type: disable
+  # Uncomment and enter host names if TLS is desired.
+  # TLS is not supported with alb load balancers
   tls:
-    # set to enabled if desired. TLS is only supported with ALB today
-    enabled: true
+    # hosts:
+    #   - livekit.myhost.com
+    # with ALB, certificates needs to reside in ACM for self-discovery
+    # with GKE, specify one or more secrets to use for the certificate
+    # see: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl#specifying_certificates_for_your_ingress
+    # secretName: <mysecret>
 
 # when true (default), optimizes network stack for service
 # increases UDP send and receive buffers

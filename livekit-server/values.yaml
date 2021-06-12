@@ -28,15 +28,11 @@ nameOverride: ""
 fullnameOverride: ""
 
 loadBalancer:
-  # valid values: disable, alb, aws
-  # alb supports SSL termination, aws NLBs does not support TLS
   type: disable
   servicePort: 80
-  hosts:
-    - myhost.com
   tls:
-    enabled: true
-    # secretName: ""
+    - hosts:
+      - myhost.com
 
 # when true (default), optimizes network stack for service
 # increases UDP send and receive buffers

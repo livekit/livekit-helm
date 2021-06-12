@@ -1,4 +1,4 @@
-{{- if eq .Values.loadBalancer.type "alb" -}}
+{{- if or (eq .Values.loadBalancer.type "alb") (eq .Values.loadBalancer.type "gke") -}}
 {{- $fullName := include "livekit-server.fullname" . -}}
 {{- $svcPort := .Values.loadBalancer.servicePort -}}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -15,7 +15,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
-    {{- if .Values.loadBalancer.tls.enabled }}
+    {{- if .Values.loadBalancer.tls }}
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     {{- end }}
   {{- end }}
@@ -24,25 +24,19 @@ spec:
   backend:
     serviceName: {{ $fullName }}
     servicePort: {{ $svcPort }}
-  {{- if .tls.enabled }}
+  {{- if .tls }}
   tls:
+    {{- range .tls }}
+    {{- if .hosts }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
         {{- end }}
-      {{- if .tls.secretName }}
-      secretName: {{ .tls.secretName }}
+      {{- if .secretName }}
+      secretName: {{ .secretName | quote }}
       {{- end }}
-  {{- end }}
-  rules:
-    {{- range .hosts }}
-    - host: {{ . | quote }}
-      http:
-        paths:
-          - path: /*
-            backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
     {{- end }}
+    {{- end }}
+  {{- end }}
 {{- end }}
 {{- end }}
