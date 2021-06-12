@@ -1,0 +1,11 @@
+{{- if eq .Values.loadBalancer.type "gke" -}}
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: {{ include "livekit-server.fullname" . }}
+spec:
+  # 10h timeout for websocket
+  timeoutSec: 36000
+  connectionDraining:
+    drainingTimeoutSec: 60
+{{ end }}
