@@ -9,7 +9,7 @@ livekit:
   #   udp_port: 7900
   #   tcp_port: 7901
   redis:
-    address: <your_redis_address>
+    address: <redis_host:port>
     # db: 0
     # username:
     # password:
