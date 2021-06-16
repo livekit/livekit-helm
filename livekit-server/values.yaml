@@ -30,9 +30,6 @@ fullnameOverride: ""
 loadBalancer:
   type: disable
   servicePort: 80
-  tls:
-    - hosts:
-      - myhost.com
 
 # when true (default), optimizes network stack for service
 # increases UDP send and receive buffers
