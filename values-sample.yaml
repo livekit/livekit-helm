@@ -19,7 +19,7 @@ livekit:
   # uncomment to enable tls TURN server
   # turn:
   #   enabled: true
-  #   mount_path: "/etc/lkcert"
+  #   mountPath: "/etc/lkcert"
   #   secretName: <tlssecret>
 
 
