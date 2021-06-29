@@ -36,6 +36,12 @@ spec:
                 configMapKeyRef:
                   name: {{ include "livekit-server.fullname" . }}
                   key: config.yaml
+            { { - if .Values.turn.enabled } }
+            - name: LIVEKIT_TURN_CERT
+              value: {{ printf "%s/tls.cert" .Values.turn.mount_path }}
+            - name: LIVEKIT_TURN_KEY
+              value: {{ printf "%s/tls.key" .Values.turn.mount_path }}
+            { { - end } }
           ports:
             - name: http
               containerPort: {{ .Values.livekit.port }}
@@ -58,6 +64,18 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          { { - if .Values.turn.enabled } }
+          volumeMounts:
+            - name: turntls
+              mountPath: {{ required "mount path required if turn enabled" .Values.turn.mount_path }}
+              readOnly: true
+          { { - end } }
+      { { - if .Values.turn.enabled } }
+      volumes:
+        - name: turntls
+          secret:
+            secretName: {{ required "tls secret required if turn enabled" .Values.turn.secretName }}
+      { { - end } }
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
