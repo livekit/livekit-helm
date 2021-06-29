@@ -23,6 +23,11 @@ livekit:
     # password:
   keys: {}
     # key value pairs
+  turn:
+    enabled: false
+    # Must match domain of your tls cert
+    # domain: turn.myhost.com
+    # secretName: <tlssecret>
 
 nameOverride: ""
 fullnameOverride: ""

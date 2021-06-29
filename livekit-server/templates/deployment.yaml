@@ -66,13 +66,13 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           { { - if .Values.turn.enabled } }
           volumeMounts:
-            - name: turntls
-              mountPath: {{ required "mount path required if turn enabled" .Values.turn.mount_path }}
+            - name: lkturncert
+              mountPath: /etc/lkcert
               readOnly: true
           { { - end } }
       { { - if .Values.turn.enabled } }
       volumes:
-        - name: turntls
+        - name: lkturncert
           secret:
             secretName: {{ required "tls secret required if turn enabled" .Values.turn.secretName }}
       { { - end } }

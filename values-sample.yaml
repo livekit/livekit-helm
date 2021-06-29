@@ -16,11 +16,11 @@ livekit:
   # one or more API key/secret pairs
   keys:
     myapikey: "myapisecret"
-  # uncomment to enable tls TURN server
-  # turn:
-  #   enabled: true
-  #   mountPath: "/etc/lkcert"
-  #   secretName: <tlssecret>
+  turn:
+    enabled: true
+    # must match domain of your tls cert
+    domain: turn.myhost.com
+    secretName: <tlssecret>
 
 
 loadBalancer:
