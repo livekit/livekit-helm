@@ -20,8 +20,11 @@ livekit:
     enabled: true
     # must match domain of your tls cert
     domain: turn.myhost.com
+    tls_port: 3478
     secretName: <tlssecret>
-
+    # valid values: disable, aws, gke
+    # tls cert and domain are required, even when load balancer is disabled
+    loadBalancerType: disable
 
 loadBalancer:
   # create
