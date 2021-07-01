@@ -1,7 +1,8 @@
+{{- if or (eq .Values.loadBalancer.type "aws") (eq .Values.loadBalancer.type "gke") }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{{{ include "livekit-server.fullname" . }}:-turn }}
+  name: '{{ include "livekit-server.fullname" . }}-turn'
   labels:
     {{- include "livekit-server.labels" . | nindent 4 }}
 spec:
