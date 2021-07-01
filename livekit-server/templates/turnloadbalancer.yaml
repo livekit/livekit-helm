@@ -1,0 +1,16 @@
+{{- if or (eq .Values.loadBalancer.type "aws") (eq .Values.loadBalancer.type "gke") }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: '{{ include "livekit-server.fullname" . }}-turn'
+  labels:
+    {{- include "livekit-server.labels" . | nindent 4 }}
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 443
+      targetPort: {{ .Values.livekit.turn.tls_port }}
+      protocol: TCP
+  selector:
+    {{- include "livekit-server.selectorLabels" . | nindent 4 }}
+{{- end }}
