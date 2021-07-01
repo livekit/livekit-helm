@@ -1,0 +1,24 @@
+replicaCount: 3
+
+livekit:
+  rtc:
+    use_external_ip: true
+  redis:
+    address: <redis-address>:6379
+  keys:
+    <key>: <secret>
+  turn:
+    enabled: true
+    domain: <turn-domain.com>
+    tls_port: 3478
+    secretName: <tls-secret>
+    loadBalancerType: gke
+
+loadBalancer:
+  type: gke
+
+optimizeNetwork: true
+
+nodeSelector: {}
+
+resources: {}
