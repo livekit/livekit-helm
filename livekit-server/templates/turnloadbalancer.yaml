@@ -1,3 +1,4 @@
+{{- if .Values.livekit.turn.enabled }}
 {{- if or (eq .Values.livekit.turn.loadBalancerType "aws") (eq .Values.livekit.turn.loadBalancerType "gke") }}
 apiVersion: v1
 kind: Service
@@ -13,4 +14,5 @@ spec:
       protocol: TCP
   selector:
     {{- include "livekit-server.selectorLabels" . | nindent 4 }}
+{{- end }}
 {{- end }}
