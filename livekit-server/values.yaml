@@ -12,6 +12,16 @@ image:
 livekit:
   port: 7880
   log_level: info
+  rtc:
+    tcp_port: 7881
+    use_external_ip: true
+  redis: {}
+    # address:
+    # db: 0
+    # username:
+    # password:
+  keys: {}
+    # key value pairs
   turn:
     enabled: false
     # Must match domain of your tls cert
