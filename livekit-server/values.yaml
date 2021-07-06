@@ -12,17 +12,6 @@ image:
 livekit:
   port: 7880
   log_level: info
-  rtc:
-    udp_port: 7900
-    tcp_port: 7901
-    use_external_ip: true
-  redis: {}
-    # address:
-    # db: 0
-    # username:
-    # password:
-  keys: {}
-    # key value pairs
   turn:
     enabled: false
     # Must match domain of your tls cert

@@ -46,14 +46,24 @@ spec:
             - name: http
               containerPort: {{ .Values.livekit.port }}
               protocol: TCP
+            {{- if .Values.livekit.rtc.udp_port }}
             - name: rtc-udp
               containerPort: {{ .Values.livekit.rtc.udp_port }}
               hostPort: {{ .Values.livekit.rtc.udp_port }}
               protocol: UDP
+            {{- end }}
+            {{- if .Values.livekit.rtc.tcp_port }}
             - name: rtc-tcp
               containerPort: {{ .Values.livekit.rtc.tcp_port }}
               hostPort: {{ .Values.livekit.rtc.tcp_port }}
               protocol: TCP
+            {{- end }}
+            {{- if .Values.livekit.turn.enabled }}
+            - name: turn-tls
+              containerPort: {{ .Values.livekit.turn.tls_port }}
+              hostPort: {{ .Values.livekit.turn.tls_port }}
+              protocol: UDP
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
