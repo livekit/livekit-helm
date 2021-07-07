@@ -6,8 +6,9 @@ livekit:
   rtc:
     use_external_ip: true
     # default ports used
-  #   udp_port: 7900
-  #   tcp_port: 7901
+    port_range_start: 50000
+    port_range_end: 60000
+    tcp_port: 7801
   redis:
     address: <redis_host:port>
     # db: 0
