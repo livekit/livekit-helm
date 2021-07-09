@@ -37,12 +37,12 @@ loadBalancer:
   # Uncomment and enter host names if TLS is desired.
   # TLS is not supported with alb load balancers
   tls:
-    # hosts:
+    # - hosts:
     #   - livekit.myhost.com
     # with ALB, certificates needs to reside in ACM for self-discovery
     # with GKE, specify one or more secrets to use for the certificate
     # see: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl#specifying_certificates_for_your_ingress
-    # secretName: <mysecret>
+    #   secretName: <mysecret>
 
 # when true (default), optimizes network stack for service
 # increases UDP send and receive buffers
