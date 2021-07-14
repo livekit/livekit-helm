@@ -29,13 +29,13 @@ livekit:
     loadBalancerType: disable
 
 loadBalancer:
-  # create
   # valid values: disable, alb, aws, gke
+  # on AWS, we recommend using alb load balancer, which supports TLS termination
   # in order to use alb, aws-ingress-controller must be installed
   # https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
   type: disable
   # Uncomment and enter host names if TLS is desired.
-  # TLS is not supported with alb load balancers
+  # TLS is not supported with `aws` load balancer
   tls:
     # - hosts:
     #   - livekit.myhost.com
