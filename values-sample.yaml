@@ -15,6 +15,7 @@ livekit:
     # username:
     # password:
   # one or more API key/secret pairs
+  # see https://docs.livekit.io/guides/getting-started/#generate-api-key-and-secret
   keys:
     myapikey: "myapisecret"
   turn:
