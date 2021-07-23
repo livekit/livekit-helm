@@ -1,3 +1,9 @@
+# LiveKit Helm chart will set up a Deployment, Service, HPA, and Ingress as either
+# a single or multi-node LiveKit deployment.
+# After installing this chart, you would still need to
+# * Open ports on the firewall to the hosts (see https://docs.livekit.io/guides/deploy/#firewall)
+# * Update DNS of hostnames to the ingress/service that were created
+
 replicaCount: 1
 
 livekit:

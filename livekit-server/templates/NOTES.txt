@@ -1,22 +1,46 @@
-LiveKit server has been deployed. Ensure that the following ports on the nodes are accessible from the internet
-* UDP {{ .Values.livekit.rtc.udp_port }}
-* TCP {{ .Values.livekit.rtc.tcp_port }}
+-------------------------------------------------------------------------------
+
+LiveKit {{ .Values.image.tag | default .Chart.AppVersion }} has been deployed!
+
+Please ensure that the following ports on the nodes are open on your firewall.
+
+{{- if .Values.livekit.rtc.udp_port }}
+* WebRTC UDP {{ .Values.livekit.rtc.udp_port }}
+{{- else }}
+* WebRTC UDP {{ .Values.livekit.rtc.port_range_start}} - {{ .Values.livekit.rtc.port_range_end}}
+{{- end }}
+* WebRTC TCP {{ .Values.livekit.rtc.tcp_port }}
+{{- if and .Values.livekit.turn.enabled (eq "disabled" .Values.livekit.turn.loadBalancerType) }}
+* TURN/TLS {{ .Values.livekit.turn.tls_port }}
+{{- end }}
 
 {{- if ne .Values.loadBalancer.type "disable" }}
-Primary load balancer has been set up for the primary API endpoint. The following hosts can now be routed to the load balancer.
-  {{- range .Values.loadBalancer.hosts }}
+
+Primary load balancer has been set up for the primary API endpoint. The
+following hosts can now be routed to the load balancer.
+  {{- range .Values.loadBalancer.tls }}
+    {{- range .hosts }}
   - {{ . }}
+    {{- end }}
   {{- end }}
 
 To determine the load balancer address, run:
-  {{ if eq .Values.loadBalancer.type "alb" }}
-kubectl get --namespace {{ .Release.Namespace }} ingress {{ include "livekit-server.fullname" . }}
-  {{ else if eq .Values.loadBalancer.type "aws" }}
-kubectl get --namespace {{ .Release.Namespace }} service {{ include "livekit-server.fullname" . }}
-  {{ else if eq .Values.loadBalancer.type "gke" }}
-kubectl get --namespace {{ .Release.Namespace }} ingress {{ include "livekit-server.fullname" . }}
-  {{ end }}
-
+  {{- if eq .Values.loadBalancer.type "alb" }}
+  $ kubectl get --namespace {{ .Release.Namespace }} ingress {{ include "livekit-server.fullname" . }}
+  {{- else if eq .Values.loadBalancer.type "aws" }}
+  $ kubectl get --namespace {{ .Release.Namespace }} service {{ include "livekit-server.fullname" . }}
+  {{- else if eq .Values.loadBalancer.type "gke" }}
+  $ kubectl get --namespace {{ .Release.Namespace }} ingress {{ include "livekit-server.fullname" . }}
+  {{- end }}
 {{- else }}
 Load balancer has been disabled
 {{- end }}
+
+{{- if and .Values.livekit.turn.enabled (ne "disabled" .Values.livekit.turn.loadBalancerType) }}
+
+TURN/TLS has been deployed behind a load balancer, to determine its address, run:
+  $ kubectl get --namespace {{ .Release.Namespace }} service {{ include "livekit-server.fullname" . }}-turn
+
+{{- end }}
+
+-------------------------------------------------------------------------------
