@@ -1,0 +1,43 @@
+replicaCount: 1
+
+recorder:
+  log_level: info
+  health_port: 8080
+  redis:
+    address: <redis_host:port>
+    # db: 0
+    # username:
+    # password:
+  # api key+secret required if recording with templates by room name only
+  apiKey: "server-api-key"
+  apiSecret: "server-api-secret"
+  # default input options
+  input:
+    width: 1920
+    height: 1080
+    depth: 24
+    framerate: 25
+  # default output options
+  output:
+    width: 1920
+    height: 1080
+    audioBitrate: "128k"
+    audioFrequency: "44100"
+    videoBitrate: "2976k"
+    videoBuffer: "5952k"
+
+
+# autoscaling requires resources to be defined
+autoscaling:
+  # set to true to enable autoscaling. when set, ignores replicaCount
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+
+# if recorder should run only on specific nodes
+# this can be used to isolate designated nodes
+nodeSelector: {}
+# node.kubernetes.io/instance-type: c5.2xlarge
+
+resources: {}

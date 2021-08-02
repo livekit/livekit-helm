@@ -1,0 +1,8 @@
+replicaCount: 2
+
+recorder:
+  log_level: info
+  redis:
+    address: <redis_host:port>
+  api_key: <api_key>
+  api_secret: <secret>

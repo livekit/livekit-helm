@@ -1,0 +1,86 @@
+# Default values for livekit-recorder.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: livekit/livekit-recorder-service
+  pullPolicy: IfNotPresent
+
+# configuration for recorder
+recorder:
+  log_level: info
+  health_port: 8080
+  redis:
+    address: <redis_host:port>
+    # db: 0
+    # username:
+    # password:
+  # api key+secret required if recording with templates by room name only
+  api_key: "server-api-key"
+  api_secret: "server-api-secret"
+  # default input options
+  input:
+    width: 1920
+    height: 1080
+    depth: 24
+    framerate: 25
+  # default output options
+  output:
+    width: 1920
+    height: 1080
+    audio_bitrate: "128k"
+    audio_frequency: "44100"
+    video_bitrate: "2976k"
+    video_buffer: "5952k"
+
+nameOverride: ""
+fullnameOverride: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+  # targetMemoryUtilizationPercentage: 80
+
+# this can be used to isolate designated nodes
+nodeSelector: {}
+# node.kubernetes.io/instance-type: c5.2xlarge
+
+resources: {}
+  # limits:
+  #   cpu: 6000m
+  #   memory: 2048Mi
+  # requests:
+  #   cpu: 4000m
+  #   memory: 1024Mi
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations:
+  sidecar.istio.io/inject: "false"
+  linkerd.io/inject: disabled
+
+podSecurityContext: {}
+# fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+# runAsUser: 1000
+
+tolerations: []
+
+affinity: {}
