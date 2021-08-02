@@ -45,20 +45,17 @@ autoscaling:
   targetCPUUtilizationPercentage: 60
   # targetMemoryUtilizationPercentage: 80
 
-# if LiveKit should run only on specific nodes
 # this can be used to isolate designated nodes
 nodeSelector: {}
 # node.kubernetes.io/instance-type: c5.2xlarge
 
 resources: {}
-  # Due to port restrictions, you can run only one instance of LiveKit per physical
-  # node. Because of that, we recommend giving it plenty of resources to work with
   # limits:
   #   cpu: 6000m
   #   memory: 2048Mi
   # requests:
   #   cpu: 4000m
-#   memory: 1024Mi
+  #   memory: 1024Mi
 
 serviceAccount:
   # Specifies whether a service account should be created
