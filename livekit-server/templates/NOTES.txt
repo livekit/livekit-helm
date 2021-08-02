@@ -10,8 +10,10 @@ Please ensure that the following ports on the nodes are open on your firewall.
 * WebRTC UDP {{ .Values.livekit.rtc.port_range_start}} - {{ .Values.livekit.rtc.port_range_end}}
 {{- end }}
 * WebRTC TCP {{ .Values.livekit.rtc.tcp_port }}
-{{- if and .Values.livekit.turn.enabled (eq "disabled" .Values.livekit.turn.loadBalancerType) }}
+{{- if .Values.livekit.turn.enabled }}
+{{- if ne "disabled" .Values.livekit.turn.loadBalancerType }}
 * TURN/TLS {{ .Values.livekit.turn.tls_port }}
+{{- end }}
 {{- end }}
 
 {{- if ne .Values.loadBalancer.type "disable" }}
@@ -36,11 +38,13 @@ To determine the load balancer address, run:
 Load balancer has been disabled
 {{- end }}
 
-{{- if and .Values.livekit.turn.enabled (ne "disabled" .Values.livekit.turn.loadBalancerType) }}
+{{- if .Values.livekit.turn.enabled }}
+{{- if ne "disabled" .Values.livekit.turn.loadBalancerType }}
 
 TURN/TLS has been deployed behind a load balancer, to determine its address, run:
   $ kubectl get --namespace {{ .Release.Namespace }} service {{ include "livekit-server.fullname" . }}-turn
 
+{{- end }}
 {{- end }}
 
 -------------------------------------------------------------------------------
