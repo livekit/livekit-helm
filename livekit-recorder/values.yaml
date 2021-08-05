@@ -42,20 +42,19 @@ autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 5
-  targetCPUUtilizationPercentage: 60
-  # targetMemoryUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 50
 
 # this can be used to isolate designated nodes
 nodeSelector: {}
 # node.kubernetes.io/instance-type: c5.2xlarge
 
-resources: {}
-  # limits:
-  #   cpu: 6000m
-  #   memory: 2048Mi
-  # requests:
-  #   cpu: 4000m
-  #   memory: 1024Mi
+resources:
+   requests:
+     cpu: 1500m
+     memory: 650Mi
+   limits:
+     cpu: 2000m
+     memory: 800Mi
 
 serviceAccount:
   # Specifies whether a service account should be created
