@@ -50,11 +50,11 @@ nodeSelector: {}
 
 resources:
    requests:
-     cpu: 1500m
-     memory: 650Mi
+     cpu: 3000m
+     memory: 500Mi
    limits:
-     cpu: 2000m
-     memory: 800Mi
+     cpu: 5000m
+     memory: 1500Mi
 
 serviceAccount:
   # Specifies whether a service account should be created
