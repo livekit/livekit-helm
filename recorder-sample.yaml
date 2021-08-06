@@ -13,6 +13,7 @@ recorder:
   apiSecret: "server-api-secret"
   # default recording options
   output:
+    # preset: 720p30, 720p60, 1080p30, or 1080p60
     input_width: 1920
     input_height: 1080
     # 0 means no scaling
