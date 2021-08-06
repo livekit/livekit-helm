@@ -20,20 +20,16 @@ recorder:
   # api key+secret required if recording with templates by room name only
   api_key: "server-api-key"
   api_secret: "server-api-secret"
-  # default input options
-  input:
-    width: 1920
-    height: 1080
+  options:
+    input_width: 1920
+    input_height: 1080
+    output_width: 0
+    output_height: 0
     depth: 24
     framerate: 30
-  # default output options
-  output:
-    width: 1920
-    height: 1080
-    audio_bitrate: "128k"
-    audio_frequency: "44100"
-    video_bitrate: "2976k"
-    video_buffer: "5952k"
+    audio_bitrate: 128
+    audio_frequency: 44100
+    video_bitrate: 4500
 
 nameOverride: ""
 fullnameOverride: ""

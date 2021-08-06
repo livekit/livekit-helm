@@ -11,21 +11,18 @@ recorder:
   # api key+secret required if recording with templates by room name only
   apiKey: "server-api-key"
   apiSecret: "server-api-secret"
-  # default input options
-  input:
-    width: 1920
-    height: 1080
+  # default recording options
+  output:
+    input_width: 1920
+    input_height: 1080
+    # 0 means no scaling
+    output_width: 0
+    output_height: 0
     depth: 24
     framerate: 30
-  # default output options
-  output:
-    width: 1920
-    height: 1080
-    audioBitrate: "128k"
-    audioFrequency: "44100"
-    videoBitrate: "2976k"
-    videoBuffer: "5952k"
-
+    audioBitrate: 128
+    audioFrequency: 44100
+    videoBitrate: 4500
 
 # autoscaling requires resources to be defined
 autoscaling:
