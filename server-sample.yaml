@@ -28,8 +28,10 @@ livekit:
     enabled: true
     # must match domain of your tls cert
     domain: turn.myhost.com
-    # must be 443 if turn load balancer is disabled
+    # tls_port must be 443 if turn load balancer is disabled
     tls_port: 3478
+    # udp_port should be 443 for best connectivity through firewalls
+    udp_port: 443
     secretName: <tlssecret>
     # valid values: disable, aws, gke
     # tls cert and domain are required, even when load balancer is disabled

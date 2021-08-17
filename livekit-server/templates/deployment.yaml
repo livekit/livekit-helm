@@ -58,7 +58,7 @@ spec:
               hostPort: {{ .Values.livekit.rtc.tcp_port }}
               protocol: TCP
             {{- end }}
-            {{- if and .Values.livekit.turn.enabled }}
+            {{- if .Values.livekit.turn.enabled }}
             {{- if .Values.livekit.turn.tls_port }}
             - name: turn-tls
               containerPort: {{ .Values.livekit.turn.tls_port }}

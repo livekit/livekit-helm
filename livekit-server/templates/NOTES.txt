@@ -11,7 +11,7 @@ Please ensure that the following ports on the nodes are open on your firewall.
 {{- end }}
 * WebRTC TCP {{ .Values.livekit.rtc.tcp_port }}
 {{- if .Values.livekit.turn.enabled }}
-{{- if .Values.livekit.turn.loadBalancerType }}
+{{- if and (ne "disabled" .Values.livekit.turn.loadBalancerType) .Values.livekit.turn.tls_port }}
 * TURN/TLS {{ .Values.livekit.turn.tls_port }}
 {{- end }}
 {{- if .Values.livekit.turn.udp_port }}

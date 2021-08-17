@@ -29,6 +29,7 @@ livekit:
     # Must match domain of your tls cert
     # domain: turn.myhost.com
     # secretName: <tlssecret>
+    loadBalancerType: disable
 
 nameOverride: ""
 fullnameOverride: ""
