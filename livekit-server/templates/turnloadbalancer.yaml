@@ -1,4 +1,4 @@
-{{- if .Values.livekit.turn.enabled }}
+{{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port }}
 {{- if or (eq .Values.livekit.turn.loadBalancerType "aws") (eq .Values.livekit.turn.loadBalancerType "gke") }}
 apiVersion: v1
 kind: Service
