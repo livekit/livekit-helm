@@ -59,10 +59,18 @@ spec:
               protocol: TCP
             {{- end }}
             {{- if .Values.livekit.turn.enabled }}
+            {{- if .Values.livekit.turn.tls_port }}
             - name: turn-tls
               containerPort: {{ .Values.livekit.turn.tls_port }}
               hostPort: {{ .Values.livekit.turn.tls_port }}
               protocol: UDP
+            {{- end }}
+            {{- if .Values.livekit.turn.udp_port }}
+            - name: turn-udp
+              containerPort: {{ .Values.livekit.turn.udp_port }}
+              hostPort: {{ .Values.livekit.turn.udp_port }}
+              protocol: UDP
+            {{- end }}
             {{- end }}
           livenessProbe:
             httpGet:
