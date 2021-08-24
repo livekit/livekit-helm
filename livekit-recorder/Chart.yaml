@@ -2,8 +2,8 @@ apiVersion: v2
 name: livekit-recorder
 description: LiveKit recorder is used by LiveKit server to record rooms.
 type: application
-version: 0.2.1
-appVersion: "v0.2.1"
+version: 0.2.2
+appVersion: "v0.2.2"
 
 sources:
   - https://github.com/livekit/livekit-recorder
