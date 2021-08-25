@@ -44,13 +44,13 @@ autoscaling:
 nodeSelector: {}
 # node.kubernetes.io/instance-type: c5.2xlarge
 
-resources:
-   requests:
-     cpu: 3000m
-     memory: 500Mi
-   limits:
-     cpu: 5000m
-     memory: 1500Mi
+resources: {}
+#   requests:
+#     cpu: 3000m
+#     memory: 500Mi
+#   limits:
+#     cpu: 5000m
+#     memory: 1500Mi
 
 serviceAccount:
   # Specifies whether a service account should be created

@@ -14,7 +14,7 @@ Please ensure that the following ports on the nodes are open on your firewall.
 {{- if .Values.livekit.turn.udp_port }}
 * TURN/UDP {{ .Values.livekit.turn.udp_port }}
 {{- end }}
-{{- if eq "disabled" .Values.livekit.turn.loadBalancerType }}
+{{- if and (eq "disabled" .Values.livekit.turn.loadBalancerType) .Values.livekit.turn.tls_port }}
 * TURN/TLS {{ .Values.livekit.turn.tls_port }}
 {{- end }}
 {{- end }}
@@ -41,7 +41,7 @@ To determine the load balancer address, run:
 Load balancer has been disabled
 {{- end }}
 
-{{- if .Values.livekit.turn.enabled }}
+{{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port }}
 {{- if ne "disabled" .Values.livekit.turn.loadBalancerType }}
 
 TURN/TLS has been deployed behind a load balancer, to determine its address, run:
