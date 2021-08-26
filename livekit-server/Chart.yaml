@@ -2,8 +2,8 @@ apiVersion: v2
 name: livekit-server
 description: LiveKit is a distributed WebRTC server. This chart runs livekit-server in distributed mode.
 type: application
-version: 0.12.1
-appVersion: "v0.12.1"
+version: 0.12.2
+appVersion: "v0.12.2"
 
 sources:
   - https://github.com/livekit/livekit-server
