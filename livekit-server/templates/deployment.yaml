@@ -24,6 +24,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       hostNetwork: true
+      terminationGracePeriodSeconds: 3600 # 1 hour
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
