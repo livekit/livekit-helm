@@ -23,6 +23,7 @@ spec:
       serviceAccountName: {{ include "livekit-server.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
       terminationGracePeriodSeconds: 3600 # 1 hour
       containers:

@@ -23,7 +23,6 @@ spec:
       serviceAccountName: {{ include "livekit-recorder.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      hostNetwork: true
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
