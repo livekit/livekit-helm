@@ -2,7 +2,8 @@ replicaCount: 2
 
 recorder:
   log_level: info
-  redis:
-    address: <redis_host:port>
+  ws_url: <ws_url>
   api_key: <api_key>
   api_secret: <secret>
+  redis:
+    address: <redis_host:port>

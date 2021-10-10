@@ -5,31 +5,30 @@
 replicaCount: 1
 
 image:
-  repository: livekit/livekit-recorder-service
+  repository: livekit/livekit-recorder
   pullPolicy: IfNotPresent
 
 # configuration for recorder
 recorder:
   log_level: info
-  health_port: 8080
-  redis:
-    address: <redis_host:port>
+  # api key+secret required if recording with templates by room name only
+  # ws_url: "wss://your-livekit-domain"
+  # api_key: "server-api-key"
+  # api_secret: "server-api-secret"
+  # health_port: 8080
+  # redis:
+    # address: <redis_host:port>
     # db: 0
     # username:
     # password:
-  # api key+secret required if recording with templates by room name only
-  api_key: "server-api-key"
-  api_secret: "server-api-secret"
-  options:
-    input_width: 1920
-    input_height: 1080
-    output_width: 0
-    output_height: 0
-    depth: 24
-    framerate: 30
-    audio_bitrate: 128
-    audio_frequency: 44100
-    video_bitrate: 4500
+  # defaults:
+    # width: 1920
+    # height: 1080
+    # depth: 24
+    # framerate: 30
+    # audio_bitrate: 128
+    # audio_frequency: 44100
+    # video_bitrate: 4500
 
 nameOverride: ""
 fullnameOverride: ""

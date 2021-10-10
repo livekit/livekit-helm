@@ -30,7 +30,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: LIVEKIT_RECORDER_SVC_CONFIG
+            - name: SERVICE_MODE
+              value: 1
+            - name: LIVEKIT_RECORDER_CONFIG
               valueFrom:
                 configMapKeyRef:
                   name: {{ include "livekit-recorder.fullname" . }}
