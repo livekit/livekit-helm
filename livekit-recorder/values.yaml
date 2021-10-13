@@ -14,7 +14,7 @@ recorder:
   # ws_url: "wss://your-livekit-domain"
   # api_key: "server-api-key"
   # api_secret: "server-api-secret"
-  # health_port: 8080
+  health_port: 8080
   # redis:
     # address: <redis_host:port>
     # db: 0

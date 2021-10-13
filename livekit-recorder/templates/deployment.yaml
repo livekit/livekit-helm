@@ -31,16 +31,18 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: SERVICE_MODE
-              value: 1
+              value: "1"
             - name: LIVEKIT_RECORDER_CONFIG
               valueFrom:
                 configMapKeyRef:
                   name: {{ include "livekit-recorder.fullname" . }}
                   key: config.yaml
           ports:
+            {{- if .Values.recorder.health_port }}
             - name: http
               containerPort: {{ .Values.recorder.health_port }}
               protocol: TCP
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
