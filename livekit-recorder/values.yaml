@@ -11,7 +11,6 @@ image:
 # configuration for recorder
 recorder:
   log_level: info
-  # api key+secret required if recording with templates by room name only
   # ws_url: "wss://your-livekit-domain"
   # api_key: "server-api-key"
   # api_secret: "server-api-secret"
