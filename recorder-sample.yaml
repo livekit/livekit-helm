@@ -9,21 +9,31 @@ recorder:
     # username:
     # password:
   # api key+secret required if recording with templates by room name only
-  apiKey: "server-api-key"
-  apiSecret: "server-api-secret"
-  # default recording options
-  output:
-    # preset: 720p30, 720p60, 1080p30, or 1080p60
-    input_width: 1920
-    input_height: 1080
-    # 0 means no scaling
-    output_width: 0
-    output_height: 0
-    depth: 24
-    framerate: 30
-    audioBitrate: 128
-    audioFrequency: 44100
-    videoBitrate: 4500
+  api_key: "server-api-key"
+  api_secret: "server-api-secret"
+  ws_url: "ws://livekit-host:<port>"
+  # for recording as mp4 files
+  # file_output:
+  #   s3: (required if using s3 output)
+  #     access_key: s3 access key
+  #     secret: s3 access secret
+  #     region: s3 region
+  #     bucket: s3 bucket
+  #     endpoint: s3 server endpoint (optional - for use with minio)
+  #   azblob: (required if using azure blob output)
+  #     account_name: azure blob account
+  #     account_key: azure blob access key
+  #     container_name: azure blob container name
+  # defaults:
+  #   preset: defaults to "NONE", options: https://github.com/livekit/livekit-recorder#presets
+  #   width: defaults to 1920
+  #   height: defaults to 1080
+  #   depth: defaults to 24
+  #   framerate: defaults to 30
+  #   audio_bitrate: defaults to 128 (kbps)
+  #   audio_frequency: defaults to 44100 (Hz)
+  #   video_bitrate: defaults to 4500 (kbps)
+  #   profile: x264 encoding profile (baseline, main, or high). defaults to main
 
 # autoscaling requires resources to be defined
 autoscaling:
