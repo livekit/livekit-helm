@@ -38,10 +38,12 @@ livekit:
     loadBalancerType: disable
 
 loadBalancer:
-  # valid values: disable, alb, aws, gke
+  # valid values: disable, alb, aws, gke, gke-managed-cert
   # on AWS, we recommend using alb load balancer, which supports TLS termination
   # in order to use alb, aws-ingress-controller must be installed
   # https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
+  # for gke-managed-cert type follow https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
+  # and set staticIpName: <nameofIpAddressCreated>
   type: disable
   # Uncomment and enter host names if TLS is desired.
   # TLS is not supported with `aws` load balancer
