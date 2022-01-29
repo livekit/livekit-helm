@@ -1,4 +1,4 @@
-{{- if or (eq .Values.loadBalancer.type "alb") (eq .Values.loadBalancer.type "gke") -}}
+{{- if or (eq .Values.loadBalancer.type "alb") (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") -}}
 {{- $fullName := include "livekit-server.fullname" . -}}
 {{- $svcPort := .Values.loadBalancer.servicePort -}}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -18,6 +18,12 @@ metadata:
     {{- if .Values.loadBalancer.tls }}
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     {{- end }}
+  {{- end }}
+  {{- if eq .Values.loadBalancer.type "gke-managed-cert" }}
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.loadBalancer.staticIpName }}
+    networking.gke.io/managed-certificates: managed-cert
+    kubernetes.io/ingress.class: "gce"
   {{- end }}
 {{- with .Values.loadBalancer }}
 spec:
