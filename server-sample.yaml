@@ -43,8 +43,9 @@ loadBalancer:
   # in order to use alb, aws-ingress-controller must be installed
   # https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
   # for gke-managed-cert type follow https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
-  # and set staticIpName: <nameofIpAddressCreated>
+  # and set staticIpName to your reserved static IP
   type: disable
+  # staticIpName: <nameofIpAddressCreated>
   # Uncomment and enter host names if TLS is desired.
   # TLS is not supported with `aws` load balancer
   tls:
