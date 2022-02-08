@@ -1,11 +1,6 @@
 {{- if ne .Values.loadBalancer.type "disable" -}}
 {{- $fullName := include "livekit-server.fullname" . -}}
 {{- $svcPort := .Values.loadBalancer.servicePort -}}
-{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -30,11 +25,22 @@ metadata:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: {{ .Values.loadBalancer.clusterIssuer }}
   {{- end }}
-{{- with .Values.loadBalancer }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: networking.k8s.io/v1
+spec:
+  defaultBackend:
+    service:
+      name:  {{ $fullName }}
+      port:
+        number: {{ $svcPort }}
+{{- else -}}
+apiVersion: extensions/v1beta1
 spec:
   backend:
     serviceName: {{ $fullName }}
     servicePort: {{ $svcPort }}
+{{- end }}
+{{- with .Values.loadBalancer }}
   {{- if .tls }}
   tls:
     {{- range .tls }}
@@ -49,5 +55,6 @@ spec:
     {{- end }}
     {{- end }}
   {{- end }}
+
 {{- end }}
 {{- end }}
