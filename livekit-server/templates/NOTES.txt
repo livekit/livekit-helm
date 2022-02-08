@@ -14,7 +14,7 @@ Please ensure that the following ports on the nodes are open on your firewall.
 {{- if .Values.livekit.turn.udp_port }}
 * TURN/UDP {{ .Values.livekit.turn.udp_port }}
 {{- end }}
-{{- if and (eq "disabled" .Values.livekit.turn.loadBalancerType) .Values.livekit.turn.tls_port }}
+{{- if and (eq "disable" .Values.livekit.turn.loadBalancerType) .Values.livekit.turn.tls_port }}
 * TURN/TLS {{ .Values.livekit.turn.tls_port }}
 {{- end }}
 {{- end }}
@@ -30,11 +30,9 @@ following hosts can now be routed to the load balancer.
   {{- end }}
 
 To determine the load balancer address, run:
-  {{- if eq .Values.loadBalancer.type "alb" }}
-  $ kubectl get --namespace {{ .Release.Namespace }} ingress {{ include "livekit-server.fullname" . }}
-  {{- else if eq .Values.loadBalancer.type "aws" }}
+  {{- if eq .Values.loadBalancer.type "aws" }}
   $ kubectl get --namespace {{ .Release.Namespace }} service {{ include "livekit-server.fullname" . }}
-  {{- else if eq .Values.loadBalancer.type "gke" }}
+  {{- else }}
   $ kubectl get --namespace {{ .Release.Namespace }} ingress {{ include "livekit-server.fullname" . }}
   {{- end }}
 {{- else }}
@@ -42,7 +40,7 @@ Load balancer has been disabled
 {{- end }}
 
 {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port }}
-{{- if ne "disabled" .Values.livekit.turn.loadBalancerType }}
+{{- if ne "disable" .Values.livekit.turn.loadBalancerType }}
 
 TURN/TLS has been deployed behind a load balancer, to determine its address, run:
   $ kubectl get --namespace {{ .Release.Namespace }} service {{ include "livekit-server.fullname" . }}-turn

@@ -1,4 +1,4 @@
-{{- if or (eq .Values.loadBalancer.type "alb") (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") -}}
+{{- if ne .Values.loadBalancer.type "disable" -}}
 {{- $fullName := include "livekit-server.fullname" . -}}
 {{- $svcPort := .Values.loadBalancer.servicePort -}}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -24,6 +24,11 @@ metadata:
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.loadBalancer.staticIpName }}
     networking.gke.io/managed-certificates: managed-cert
     kubernetes.io/ingress.class: "gce"
+  {{- end }}
+  {{- if eq .Values.loadBalancer.type "do" }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: {{ .Values.loadBalancer.clusterIssuer }}
   {{- end }}
 {{- with .Values.loadBalancer }}
 spec:

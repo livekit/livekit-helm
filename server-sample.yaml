@@ -33,17 +33,19 @@ livekit:
     # udp_port should be 443 for best connectivity through firewalls
     udp_port: 443
     secretName: <tlssecret>
-    # valid values: disable, aws, gke
+    # valid values: disable, aws, gke, do
     # tls cert and domain are required, even when load balancer is disabled
     loadBalancerType: disable
 
 loadBalancer:
-  # valid values: disable, alb, aws, gke, gke-managed-cert
+  # valid values: disable, alb, aws, gke, gke-managed-cert, do
   # on AWS, we recommend using alb load balancer, which supports TLS termination
   # in order to use alb, aws-ingress-controller must be installed
   # https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
   # for gke-managed-cert type follow https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
   # and set staticIpName to your reserved static IP
+  # for DO follow https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-on-digitalocean-kubernetes-using-helm
+  # steps 2 and 4 to setup your ingress controller
   type: disable
   # staticIpName: <nameofIpAddressCreated>
   # Uncomment and enter host names if TLS is desired.
@@ -53,6 +55,7 @@ loadBalancer:
     #   - livekit.myhost.com
     # with ALB, certificates needs to reside in ACM for self-discovery
     # with GKE, specify one or more secrets to use for the certificate
+    # with DO, use cert-manager and create certificate for turn. Load balancer is autoamtic
     # see: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl#specifying_certificates_for_your_ingress
     #   secretName: <mysecret>
 
