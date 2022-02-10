@@ -2,8 +2,8 @@ apiVersion: v2
 name: livekit-server
 description: Open source WebRTC infrastructure. Host your own real-time video/audio experiences.
 type: application
-version: 0.15.3
-appVersion: "v0.15.3"
+version: 0.15.4
+appVersion: "v0.15.4"
 
 sources:
   - https://github.com/livekit/livekit-server
