@@ -27,10 +27,11 @@ autoscaling:
   maxReplicas: 5
   targetCPUUtilizationPercentage: 60
 
-resources:
-  limits:
-    cpu: 15000m
-    memory: 10240Mi
-  requests:
-    cpu: 14000m
-    memory: 5120Mi
+# use the below to tune in the pod config, ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+# resources:
+#   limits:
+#     cpu: 15000m
+#     memory: 10240Mi
+#   requests:
+#     cpu: 14000m
+#     memory: 5120Mi
