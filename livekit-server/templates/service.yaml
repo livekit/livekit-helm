@@ -23,5 +23,11 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    {{- if .Values.livekit.prometheus_port }}
+    - port: {{ .Values.livekit.prometheus_port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+    {{- end }}
   selector:
     {{- include "livekit-server.selectorLabels" . | nindent 4 }}

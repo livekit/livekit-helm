@@ -8,6 +8,8 @@ replicaCount: 1
 
 livekit:
   # port: 7880
+  # Uncomment to enable prometheus metrics
+  # prometheus_port: 6789
   log_level: info
   rtc:
     use_external_ip: true

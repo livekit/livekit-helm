@@ -60,6 +60,12 @@ spec:
               hostPort: {{ .Values.livekit.rtc.tcp_port }}
               protocol: TCP
             {{- end }}
+            {{- if .Values.livekit.prometheus_port }}
+            - name: metrics
+              containerPort: {{ .Values.livekit.prometheus_port }}
+              hostPort: {{ .Values.livekit.prometheus_port }}
+              protocol: TCP
+            {{- end }}
             {{- if .Values.livekit.turn.enabled }}
             {{- if .Values.livekit.turn.tls_port }}
             - name: turn-tls
