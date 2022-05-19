@@ -14,7 +14,7 @@ Customize values in values-sample.yaml
 Then install the chart
 
 ```shell
-helm install <instance_name> livekit/livekit --namespace <namespace> --values values.yaml
+helm install <instance_name> livekit/livekit-server --namespace <namespace> --values values.yaml
 ```
 
 ## For LiveKit Helm developers
