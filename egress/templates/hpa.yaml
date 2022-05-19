@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "livekit-recorder.fullname" . }}
+  name: {{ include "egress.fullname" . }}
   labels:
-    {{- include "livekit-recorder.labels" . | nindent 4 }}
+    {{- include "egress.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "livekit-recorder.fullname" . }}
+    name: {{ include "egress.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

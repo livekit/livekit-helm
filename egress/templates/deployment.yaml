@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "livekit-recorder.fullname" . }}
+  name: {{ include "egress.fullname" . }}
   labels:
-    {{- include "livekit-recorder.labels" . | nindent 4 }}
+    {{- include "egress.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "livekit-recorder.selectorLabels" . | nindent 6 }}
+      {{- include "egress.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,9 +18,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "livekit-recorder.selectorLabels" . | nindent 8 }}
+        {{- include "egress.selectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "livekit-recorder.serviceAccountName" . }}
+      serviceAccountName: {{ include "egress.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -30,27 +30,30 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: SERVICE_MODE
-              value: "1"
-            - name: LIVEKIT_RECORDER_CONFIG
+            - name: EGRESS_CONFIG_BODY
               valueFrom:
                 configMapKeyRef:
-                  name: {{ include "livekit-recorder.fullname" . }}
+                  name: {{ include "egress.fullname" . }}
                   key: config.yaml
           ports:
-            {{- if .Values.recorder.health_port }}
-            - name: http
-              containerPort: {{ .Values.recorder.health_port }}
+            {{- if .Values.egress.health_port }}
+            - name: health
+              containerPort: {{ .Values.egress.health_port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.egress.prometheus_port }}
+            - name: metrics
+              containerPort: {{ .Values.egress.prometheus_port }}
               protocol: TCP
             {{- end }}
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: health
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: health
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
