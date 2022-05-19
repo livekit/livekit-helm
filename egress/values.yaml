@@ -1,0 +1,44 @@
+# Default values for egress.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: livekit/egress
+  pullPolicy: IfNotPresent
+
+egress:
+  log_level: info
+  health_port: 8080
+  prometheus_port: 9090
+
+nameOverride: ""
+fullnameOverride: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetMemoryUtilizationPercentage: 50
+
+nodeSelector: {}
+
+resources: {}
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+podAnnotations:
+  sidecar.istio.io/inject: "false"
+  linkerd.io/inject: disabled
+
+podSecurityContext: {}
+
+securityContext: {}
+
+tolerations: []
+
+affinity: {}

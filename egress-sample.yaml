@@ -1,54 +1,53 @@
-# Default values for livekit-recorder.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 replicaCount: 1
 
-image:
-  repository: livekit/livekit-recorder
-  pullPolicy: IfNotPresent
-
-# configuration for recorder
-recorder:
+egress:
+  api_key: "server-api-key"
+  api_secret: "server-api-secret"
+  ws_url: "ws://livekit-host:<port>"
   log_level: info
-  # ws_url: "wss://your-livekit-domain"
-  # api_key: "server-api-key"
-  # api_secret: "server-api-secret"
   health_port: 8080
-  # redis:
-    # address: <redis_host:port>
+  prometheus_port: 9090
+  # template_base: "https://your-custom-template.com"
+  redis:
+    address: <redis_host:port>
     # db: 0
     # username:
     # password:
-  # defaults:
-    # width: 1920
-    # height: 1080
-    # depth: 24
-    # framerate: 30
-    # audio_bitrate: 128
-    # audio_frequency: 44100
-    # video_bitrate: 4500
+  s3:
+    access_key: "access_key"
+    secret: "secret"
+    region: "us-west-2"
+    # endpoint:
+    bucket: "my-egress"
+  # azure:
+    # account_name:
+    # account_key:
+    # container_name:
+  # gcp:
+    # credentials_json:
+    # bucket:
 
-nameOverride: ""
-fullnameOverride: ""
 
+# autoscaling requires resources to be defined
 autoscaling:
+  # set to true to enable autoscaling. when set, ignores replicaCount
   enabled: false
   minReplicas: 1
   maxReplicas: 5
-  targetMemoryUtilizationPercentage: 50
+  targetCPUUtilizationPercentage: 60
 
+# if egress should run only on specific nodes
 # this can be used to isolate designated nodes
 nodeSelector: {}
 # node.kubernetes.io/instance-type: c5.2xlarge
 
 resources: {}
 #   requests:
-#     cpu: 3000m
-#     memory: 500Mi
-#   limits:
 #     cpu: 5000m
-#     memory: 1500Mi
+#     memory: 1024Mi
+#   limits:
+#     cpu: 8000m
+#     memory: 2048Mi
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -71,7 +70,7 @@ securityContext: {}
   #   drop:
   #   - ALL
   # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
+# runAsNonRoot: true
 # runAsUser: 1000
 
 tolerations: []
