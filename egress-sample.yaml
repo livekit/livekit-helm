@@ -35,6 +35,12 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 5
   targetCPUUtilizationPercentage: 60
+#  targetMemoryUtilizationPercentage: 60
+  # for use with prometheus adapter - the egress service outputs a prometheus metric called livekit_egress_available
+  # this can be used to ensure a certain number or percentage of instances are available
+#  custom:
+#    metricName: my_metric_name
+#    targetAverageValue: 70
 
 # if egress should run only on specific nodes
 # this can be used to isolate designated nodes
