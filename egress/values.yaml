@@ -18,9 +18,6 @@ fullnameOverride: ""
 
 autoscaling:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 5
-  targetMemoryUtilizationPercentage: 50
 
 nodeSelector: {}
 
