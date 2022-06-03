@@ -23,7 +23,7 @@ spec:
       {{- end }}
       containers:
       - name: daemonset
-        image: gcr.io/google-containers/startup-script:v2
+        image: cilium/startup-script:2de58e53a7060593c91d0655b337a57f06bf5d66-dev        
         imagePullPolicy: Always
         securityContext:
           privileged: true
