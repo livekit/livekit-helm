@@ -6,8 +6,11 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "livekit-server.labels" . | nindent 4 }}
-  {{- if eq .Values.loadBalancer.type "alb" }}
   annotations:
+  {{- with .Values.loadBalancer.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if eq .Values.loadBalancer.type "alb" }}
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     {{- if .Values.loadBalancer.tls }}
@@ -15,13 +18,11 @@ metadata:
     {{- end }}
   {{- end }}
   {{- if eq .Values.loadBalancer.type "gke-managed-cert" }}
-  annotations:
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.loadBalancer.staticIpName }}
     networking.gke.io/managed-certificates: managed-cert
     kubernetes.io/ingress.class: "gce"
   {{- end }}
   {{- if eq .Values.loadBalancer.type "do" }}
-  annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: {{ .Values.loadBalancer.clusterIssuer }}
   {{- end }}
