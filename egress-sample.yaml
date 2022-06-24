@@ -13,6 +13,7 @@ egress:
     # db: 0
     # username:
     # password:
+    # use_tls: false
   s3:
     access_key: "access_key"
     secret: "secret"
