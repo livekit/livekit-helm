@@ -37,6 +37,7 @@ fullnameOverride: ""
 loadBalancer:
   type: disable
   servicePort: 80
+  annotations: {}
 
 # when true (default), optimizes network stack for service
 # increases UDP send and receive buffers
