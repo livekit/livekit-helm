@@ -29,16 +29,18 @@ livekit:
     myapikey: "myapisecret"
   turn:
     enabled: true
-    # must match domain of your tls cert
+    # must match domain of your TLS cert
     domain: turn.myhost.com
     # tls_port must be 443 if turn load balancer is disabled
     tls_port: 3478
     # udp_port should be 443 for best connectivity through firewalls
     udp_port: 443
+    # uncomment if you will manage TLS termination for TURN, secretName is not used
+    # when external_tls is set
+    # external_tls: true
+    # Kubernetes Secret containing TLS cert for <turn.myhost.com>
+    # See https://docs.livekit.io/deploy/kubernetes/#importing-ssl-certificates
     secretName: <tlssecret>
-    # valid values: disable, aws, gke, do
-    # tls cert and domain are required, even when load balancer is disabled
-    loadBalancerType: disable
 
 loadBalancer:
   # valid values: disable, alb, aws, gke, gke-managed-cert, do
@@ -47,24 +49,19 @@ loadBalancer:
   # https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
   # for gke-managed-cert type follow https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
   # and set staticIpName to your reserved static IP
-  # for DO follow https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-on-digitalocean-kubernetes-using-helm
-  # steps 2 and 4 to setup your ingress controller
+  # for DO uncomment clusterIssuer with your cert manager issuer
   type: disable
   # staticIpName: <nameofIpAddressCreated>
-  # Uncomment and enter host names if TLS is desired.
+  # clusterIssuer: letsencrypt-prod
   # TLS is not supported with `aws` load balancer
   tls:
     # - hosts:
     #   - livekit.myhost.com
     # with ALB, certificates needs to reside in ACM for self-discovery
-    # with GKE, specify one or more secrets to use for the certificate
     # with DO, use cert-manager and create certificate for turn. Load balancer is autoamtic
+    # with GKE, specify one or more secrets to use for the certificate
     # see: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl#specifying_certificates_for_your_ingress
     #   secretName: <mysecret>
-
-# when true (default), optimizes network stack for service
-# increases UDP send and receive buffers
-# optimizeNetwork: true
 
 # autoscaling requires resources to be defined
 autoscaling:
@@ -76,10 +73,12 @@ autoscaling:
 
 # if LiveKit should run only on specific nodes
 # this can be used to isolate designated nodes
-nodeSelector: {}
+nodeSelector:
+  {}
   # node.kubernetes.io/instance-type: c5.2xlarge
 
-resources: {}
+resources:
+  {}
   # Due to port restrictions, you can run only one instance of LiveKit per physical
   # node. Because of that, we recommend giving it plenty of resources to work with
   # limits:

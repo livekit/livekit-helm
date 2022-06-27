@@ -1,5 +1,4 @@
 {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port }}
-{{- if ne .Values.livekit.turn.loadBalancerType "disable" -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,12 +6,13 @@ metadata:
   labels:
     {{- include "livekit-server.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.livekit.turn.external_tls }}
   type: LoadBalancer
+  {{- end }}
   ports:
     - port: 443
       targetPort: {{ .Values.livekit.turn.tls_port }}
       protocol: TCP
   selector:
     {{- include "livekit-server.selectorLabels" . | nindent 4 }}
-{{- end }}
 {{- end }}

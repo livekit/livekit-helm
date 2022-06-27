@@ -14,7 +14,7 @@ Please ensure that the following ports on the nodes are open on your firewall.
 {{- if .Values.livekit.turn.udp_port }}
 * TURN/UDP {{ .Values.livekit.turn.udp_port }}
 {{- end }}
-{{- if and (eq "disable" .Values.livekit.turn.loadBalancerType) .Values.livekit.turn.tls_port }}
+{{- if .Values.livekit.turn.tls_port }}
 * TURN/TLS {{ .Values.livekit.turn.tls_port }}
 {{- end }}
 {{- end }}
@@ -22,7 +22,7 @@ Please ensure that the following ports on the nodes are open on your firewall.
 {{- if ne .Values.loadBalancer.type "disable" }}
 
 Primary load balancer has been set up for the primary API endpoint. The
-following hosts can now be routed to the load balancer.
+following hosts should now be pointed at the load balancer.
   {{- range .Values.loadBalancer.tls }}
     {{- range .hosts }}
   - {{ . }}
@@ -40,13 +40,11 @@ Load balancer has been disabled
 {{- end }}
 
 {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port }}
-{{- if ne "disable" .Values.livekit.turn.loadBalancerType }}
 
 TURN/TLS has been deployed behind a load balancer, to determine its address, run:
   $ kubectl get --namespace {{ .Release.Namespace }} service {{ include "livekit-server.fullname" . }}-turn
 You may now map the TURN/TLS domain {{ .Values.livekit.turn.domain }} to this address
 
-{{- end }}
 {{- end }}
 
 -------------------------------------------------------------------------------

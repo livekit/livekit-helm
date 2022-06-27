@@ -23,23 +23,45 @@ metadata:
     kubernetes.io/ingress.class: "gce"
   {{- end }}
   {{- if eq .Values.loadBalancer.type "do" }}
-    kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: {{ .Values.loadBalancer.clusterIssuer }}
   {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: networking.k8s.io/v1
 spec:
+  {{- if eq .Values.loadBalancer.type "do" }}
+  ingressClassName: nginx
+  rules:
+  # In order to work with cert manager on DO, we cannot set us as a default backend
+  {{- range .Values.loadBalancer.tls }}
+  {{- range .hosts }}
+  - host: {{ . | quote }}
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: {{ $fullName }}
+            port:
+              number: {{ $svcPort }}
+  {{- end }}
+  {{- end }}
+  {{- else -}}
   defaultBackend:
     service:
       name:  {{ $fullName }}
       port:
         number: {{ $svcPort }}
+  {{- end }}
 {{- else -}}
 apiVersion: extensions/v1beta1
 spec:
   backend:
     serviceName: {{ $fullName }}
     servicePort: {{ $svcPort }}
+{{- end }}
+{{- if eq .Values.loadBalancer.type "do" }}
+  ingressClassName: nginx
 {{- end }}
 {{- with .Values.loadBalancer }}
   {{- if .tls }}

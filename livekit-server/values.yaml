@@ -17,19 +17,20 @@ livekit:
     port_range_start: 50000
     port_range_end: 60000
     use_external_ip: true
-  redis: {}
+  redis:
+    {}
     # address:
     # db: 0
     # username:
     # password:
-  keys: {}
+  keys:
+    {}
     # key value pairs
   turn:
     enabled: false
     # Must match domain of your tls cert
     # domain: turn.myhost.com
     # secretName: <tlssecret>
-    loadBalancerType: disable
 
 nameOverride: ""
 fullnameOverride: ""
@@ -38,10 +39,6 @@ loadBalancer:
   type: disable
   servicePort: 80
   annotations: {}
-
-# when true (default), optimizes network stack for service
-# increases UDP send and receive buffers
-optimizeNetwork: true
 
 autoscaling:
   enabled: false
@@ -52,10 +49,12 @@ autoscaling:
 
 # if LiveKit should run only on specific nodes
 # this can be used to isolate designated nodes
-nodeSelector: {}
+nodeSelector:
+  {}
   # node.kubernetes.io/instance-type: c5.2xlarge
 
-resources: {}
+resources:
+  {}
   # Due to port restrictions, you can run only one instance of LiveKit per physical
   # node. Because of that, we recommend giving it plenty of resources to work with
   # limits:
@@ -78,10 +77,12 @@ podAnnotations:
   sidecar.istio.io/inject: "false"
   linkerd.io/inject: disabled
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
