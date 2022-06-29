@@ -17,11 +17,14 @@ livekit:
 
 loadBalancer:
   type: do
+  # TLS certificate generated automatically with certmanager / letsencrypt
+  # secretName is still required. certmanager will place the provisioned
+  # certificate in that secret
   clusterIssuer: letsencrypt-prod
   tls:
     - hosts:
         - <your-primary-domain>
-      secretName: <primary-tls-secret>
+      secretName: <secret-name>
 
 autoscaling:
   enabled: true

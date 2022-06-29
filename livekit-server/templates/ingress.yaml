@@ -7,9 +7,11 @@ metadata:
   labels:
     {{- include "livekit-server.labels" . | nindent 4 }}
   annotations:
+  # custom annotations
   {{- with .Values.loadBalancer.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  # AWS ALB
   {{- if eq .Values.loadBalancer.type "alb" }}
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
@@ -17,19 +19,25 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     {{- end }}
   {{- end }}
+  # GKE with managed certs
   {{- if eq .Values.loadBalancer.type "gke-managed-cert" }}
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.loadBalancer.staticIpName }}
     networking.gke.io/managed-certificates: managed-cert
     kubernetes.io/ingress.class: "gce"
   {{- end }}
+  # DO with cert manager
   {{- if eq .Values.loadBalancer.type "do" }}
     cert-manager.io/cluster-issuer: {{ .Values.loadBalancer.clusterIssuer }}
   {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: networking.k8s.io/v1
+{{- else }}
+apiVersion: extensions/v1beta1
+{{- end }}
 spec:
   {{- if eq .Values.loadBalancer.type "do" }}
   ingressClassName: nginx
+  {{- end }}
   rules:
   # In order to work with cert manager on DO, we cannot set us as a default backend
   {{- range .Values.loadBalancer.tls }}
@@ -46,23 +54,6 @@ spec:
               number: {{ $svcPort }}
   {{- end }}
   {{- end }}
-  {{- else -}}
-  defaultBackend:
-    service:
-      name:  {{ $fullName }}
-      port:
-        number: {{ $svcPort }}
-  {{- end }}
-{{- else -}}
-apiVersion: extensions/v1beta1
-spec:
-  backend:
-    serviceName: {{ $fullName }}
-    servicePort: {{ $svcPort }}
-{{- end }}
-{{- if eq .Values.loadBalancer.type "do" }}
-  ingressClassName: nginx
-{{- end }}
 {{- with .Values.loadBalancer }}
   {{- if .tls }}
   tls:
