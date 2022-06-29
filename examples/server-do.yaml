@@ -6,21 +6,25 @@ livekit:
   rtc:
     use_external_ip: true
   redis:
-    address: <redis-address>:6379
+    address: <redis-host>:6379
   keys:
-    <key>: <secret>
+    <your-api-key>: <your-secret>
   turn:
     enabled: true
-    domain: <turn-address>
+    domain: <your-turn-domain>
     tls_port: 3478
     secretName: <turn-tls-secret>
 
 loadBalancer:
-  type: gke
+  type: do
+  # TLS certificate generated automatically with certmanager / letsencrypt
+  # secretName is still required. certmanager will place the provisioned
+  # certificate in that secret
+  clusterIssuer: letsencrypt-prod
   tls:
     - hosts:
-        - <server-address>
-      secretName: <server-tls-secret>
+        - <your-primary-domain>
+      secretName: <secret-name>
 
 autoscaling:
   enabled: true
