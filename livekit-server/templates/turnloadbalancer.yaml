@@ -5,6 +5,10 @@ metadata:
   name: '{{ include "livekit-server.fullname" . }}-turn'
   labels:
     {{- include "livekit-server.labels" . | nindent 4 }}
+  {{- with .Values.livekit.turn.loadBalancerAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   {{- if not .Values.livekit.turn.external_tls }}
   type: LoadBalancer
