@@ -2,8 +2,8 @@ apiVersion: v2
 name: egress
 description: Egress is used by LiveKit to stream and record rooms.
 type: application
-version: 1.0.6
-appVersion: "v1.0.5"
+version: 1.1.0
+appVersion: "v1.1.0"
 
 sources:
   - https://github.com/livekit/egress
