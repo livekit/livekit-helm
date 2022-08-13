@@ -17,6 +17,7 @@ spec:
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
         {{- include "livekit-server.selectorLabels" . | nindent 8 }}
     spec:
