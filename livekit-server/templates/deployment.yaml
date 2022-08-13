@@ -38,7 +38,7 @@ spec:
                 configMapKeyRef:
                   name: {{ include "livekit-server.fullname" . }}
                   key: config.yaml
-            {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port }}
+            {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
             - name: LIVEKIT_TURN_CERT
               value: /etc/lkcert/tls.crt
             - name: LIVEKIT_TURN_KEY
@@ -90,13 +90,13 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port }}
+          {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
           volumeMounts:
             - name: lkturncert
               mountPath: /etc/lkcert
               readOnly: true
           {{- end }}
-      {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port }}
+      {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
       volumes:
         - name: lkturncert
           secret:
