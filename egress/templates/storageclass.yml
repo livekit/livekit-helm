@@ -1,0 +1,15 @@
+{{- if .Values.storageClass.create -}}
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ .Values.storageClass.name }}
+  {{- with .Values.storageClass.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+provisioner: {{ .Values.storageClass.provisioner }}
+{{- with .Values.storageClass.parameters }}
+parameters:
+  {{- toYaml . | nindent 2}}
+{{- end }}
+{{- end }}

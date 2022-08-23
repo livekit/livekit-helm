@@ -42,3 +42,10 @@ affinity: {}
 
 volumes: {}
 volumeMounts: {}
+storageClass:
+  create: false
+  name: ""
+  provisioner: ""
+  parameters: {}
+  labels: {}
+  annotations: {}
