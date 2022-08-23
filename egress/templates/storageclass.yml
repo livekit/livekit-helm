@@ -12,4 +12,5 @@ provisioner: {{ .Values.storageClass.provisioner }}
 parameters:
   {{- toYaml . | nindent 2}}
 {{- end }}
+volumeBindingMode: WaitForFirstConsumer
 {{- end }}
