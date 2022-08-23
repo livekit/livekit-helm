@@ -39,3 +39,6 @@ securityContext: {}
 tolerations: []
 
 affinity: {}
+
+volumes: {}
+volumeMounts: {}
