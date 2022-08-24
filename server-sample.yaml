@@ -45,23 +45,24 @@ livekit:
 loadBalancer:
   # valid values: disable, alb, aws, gke, gke-managed-cert, do
   # on AWS, we recommend using alb load balancer, which supports TLS termination
-  # in order to use alb, aws-ingress-controller must be installed
-  # https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
-  # for gke-managed-cert type follow https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
-  # and set staticIpName to your reserved static IP
-  # for DO uncomment clusterIssuer with your cert manager issuer
+  # * in order to use alb, aws-ingress-controller must be installed
+  #   https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
+  # * for gke-managed-cert type follow https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
+  #   and set staticIpName to your reserved static IP, and certificateName to be
+  #   name of the managed cert
+  # * for do uncomment clusterIssuer with your cert manager issuer
   type: disable
   # staticIpName: <nameofIpAddressCreated>
+  # certificateName: <nameOfCert>
   # clusterIssuer: letsencrypt-prod
-  # TLS is not supported with `aws` load balancer
   tls:
-    # - hosts:
-    #   - livekit.myhost.com
-    # with ALB, certificates needs to reside in ACM for self-discovery
-    # with DO, use cert-manager and create certificate for turn. Load balancer is autoamtic
-    # with GKE, specify one or more secrets to use for the certificate
-    # see: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl#specifying_certificates_for_your_ingress
-    #   secretName: <mysecret>
+  #   - hosts:
+  #     - livekit.myhost.com
+  #   with alb, certificates needs to reside in ACM for self-discovery
+  #   with do, use cert-manager and create certificate for turn. Load balancer is autoamtic
+  #   with gke, specify one or more secrets to use for the certificate
+  #   see: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl#specifying_certificates_for_your_ingress
+  #     secretName: <mysecret>
 
 # autoscaling requires resources to be defined
 autoscaling:
