@@ -39,7 +39,7 @@ To determine the load balancer address, run:
 Load balancer has been disabled
 {{- end }}
 
-{{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port }}
+{{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
 
 TURN/TLS has been deployed behind a load balancer, to determine its address, run:
   $ kubectl get --namespace {{ .Release.Namespace }} service {{ include "livekit-server.fullname" . }}-turn
