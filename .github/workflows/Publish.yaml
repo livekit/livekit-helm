@@ -1,0 +1,33 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ github.sha }}
+      CHART_VERSION: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v1
+
+      - name: Publish Helm Chart
+        env:
+          REGISTRY: ghcr.io/prepared911/preparedkit-egress
+        run: |
+          helm package egress --version ${{ env.CHART_VERSION }} --app-version ${{ env.CHART_VERSION }} 
+          echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ${{ env.REGISTRY }} --username prepared911 --password-stdin
+          helm push *.tgz oci://${{ env.REGISTRY }}
