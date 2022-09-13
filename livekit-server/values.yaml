@@ -8,6 +8,9 @@ image:
   repository: livekit/livekit-server
   pullPolicy: IfNotPresent
 
+# Suggested value for gracefully terminating the pod: 5 hours
+terminationGracePeriodSeconds: 18000
+
 # configuration for livekit
 livekit:
   port: 7880
