@@ -1,5 +1,7 @@
 replicaCount: 1
 
+terminationGracePeriodSeconds: 3600
+
 egress:
   api_key: "server-api-key"
   api_secret: "server-api-secret"
