@@ -1,5 +1,6 @@
 replicaCount: 1
 
+# Suggested value for gracefully terminate the pod: 1 hour
 terminationGracePeriodSeconds: 3600
 
 egress:
