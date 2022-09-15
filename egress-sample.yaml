@@ -1,5 +1,8 @@
 replicaCount: 1
 
+# Suggested value for gracefully terminate the pod: 1 hour
+terminationGracePeriodSeconds: 3600
+
 egress:
   api_key: "server-api-key"
   api_secret: "server-api-secret"
@@ -31,7 +34,6 @@ egress:
     # room_composite_cpu_cost: 3
     # track_composite_cpu_cost: 2
     # track_cpu_cost: 1
-
 
 # autoscaling requires resources to be defined
 autoscaling:

@@ -26,7 +26,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
-      terminationGracePeriodSeconds: 18000 # 5 hours
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

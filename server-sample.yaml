@@ -6,6 +6,9 @@
 
 replicaCount: 1
 
+# Suggested value for gracefully terminate the pod: 5 hours
+terminationGracePeriodSeconds: 18000
+
 livekit:
   # port: 7880
   # Uncomment to enable prometheus metrics

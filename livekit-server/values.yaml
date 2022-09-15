@@ -8,6 +8,8 @@ image:
   repository: livekit/livekit-server
   pullPolicy: IfNotPresent
 
+terminationGracePeriodSeconds: 18000
+
 # configuration for livekit
 livekit:
   port: 7880

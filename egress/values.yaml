@@ -13,6 +13,8 @@ egress:
   health_port: 8080
   prometheus_port: 9090
 
+terminationGracePeriodSeconds: 3600
+
 nameOverride: ""
 fullnameOverride: ""
 
