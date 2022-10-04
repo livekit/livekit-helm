@@ -72,7 +72,7 @@ spec:
             - name: turn-tls
               containerPort: {{ .Values.livekit.turn.tls_port }}
               hostPort: {{ .Values.livekit.turn.tls_port }}
-              protocol: UDP
+              protocol: TCP
             {{- end }}
             {{- if .Values.livekit.turn.udp_port }}
             - name: turn-udp
