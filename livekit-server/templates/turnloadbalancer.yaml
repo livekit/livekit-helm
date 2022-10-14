@@ -10,9 +10,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if not .Values.livekit.turn.external_tls }}
-  type: LoadBalancer
-  {{- end }}
+  type: {{ default "LoadBalancer" .Values.livekit.turn.serviceType }} 
   ports:
     - port: 443
       targetPort: {{ .Values.livekit.turn.tls_port }}
