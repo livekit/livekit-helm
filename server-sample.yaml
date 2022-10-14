@@ -46,7 +46,7 @@ livekit:
     secretName: <tlssecret>
     # set the Kubernetes serviceType for the TURN service. By default it sets it to "LoadBalancer"
     # See kubernetes serviceTypes on official documentation: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
-    service_type: "LoadBalancer"
+    serviceType: "LoadBalancer"
 
 loadBalancer:
   # valid values: disable, alb, aws, gke, gke-managed-cert, do
