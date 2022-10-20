@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: livekit/ingress
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 ingress:
   log_level: info
