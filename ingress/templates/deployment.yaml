@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ingress.fullname" . }}
+  labels:
+    {{- include "ingress.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "ingress.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        {{- include "ingress.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "ingress.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      imagePullSecrets: #TODO remove after testing
+      - name: dockerhub
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: INGRESS_CONFIG_BODY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "ingress.fullname" . }}
+                  key: config.yaml
+          ports:
+            {{- if .Values.ingress.health_port }}
+            - name: health
+              containerPort: {{ .Values.ingress.health_port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.ingress.http_relay_port }}
+            - name: http-relay
+              containerPort: {{ .Values.ingress.http_relay_port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.ingress.rtmp_port }}
+            - name: rtmp-port
+              containerPort: {{ .Values.ingress.rtmp_port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.ingress.prometheus_port }}
+            - name: metrics
+              containerPort: {{ .Values.ingress.prometheus_port }}
+              protocol: TCP
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: health
+          readinessProbe:
+            httpGet:
+              path: /
+              port: health
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,52 @@
+# Default values for ingress.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: livekit/ingress
+  pullPolicy: Always
+
+ingress:
+  log_level: info
+  health_port: 7888
+  prometheus_port: 7889
+  http_relay_port: 9090
+  rtmp_port: 1935
+  
+  cpu_cost:
+    rtmp_cpu_cost: 2
+
+loadBalancer:
+  servicePort: 7888
+  annotations: {}
+
+terminationGracePeriodSeconds: 3600
+
+nameOverride: ""
+fullnameOverride: ""
+
+autoscaling:
+  enabled: false
+
+nodeSelector: {}
+
+resources: {}
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+podAnnotations:
+  sidecar.istio.io/inject: "false"
+  linkerd.io/inject: disabled
+
+podSecurityContext: {}
+
+securityContext: {}
+
+tolerations: []
+
+affinity: {}

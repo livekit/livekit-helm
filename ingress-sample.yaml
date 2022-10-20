@@ -1,0 +1,79 @@
+replicaCount: 1
+
+# Suggested value for gracefully terminate the pod: 1 hour
+terminationGracePeriodSeconds: 3600
+
+ingress:
+  api_key: "server-api-key"
+  api_secret: "server-api-secret"
+  ws_url: "ws://livekit-host:<port>"
+  log_level: info
+  health_port: 7888
+  prometheus_port: 7889
+  http_relay_port: 9090
+  rtmp_port: 1935
+  
+  redis:
+    address: <redis_host:port>
+    # db: 0
+    # username:
+    # password:
+    # use_tls: false
+
+  cpu_cost:
+    rtmp_cpu_cost: 2.0
+
+# autoscaling requires resources to be defined
+autoscaling:
+  # set to true to enable autoscaling. when set, ignores replicaCount
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+#  targetMemoryUtilizationPercentage: 60
+  # for use with prometheus adapter - the ingress service outputs a prometheus metric called livekit_ingress_available
+  # this can be used to ensure a certain number or percentage of instances are available
+#  custom:
+#    metricName: my_metric_name
+#    targetAverageValue: 70
+
+# if ingress should run only on specific nodes
+# this can be used to isolate designated nodes
+nodeSelector: {}
+# node.kubernetes.io/instance-type: c5.2xlarge
+
+resources: {}
+#   requests:
+#     cpu: 5000m
+#     memory: 1024Mi
+#   limits:
+#     cpu: 8000m
+#     memory: 2048Mi
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations:
+  sidecar.istio.io/inject: "false"
+  linkerd.io/inject: disabled
+
+podSecurityContext: {}
+# fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+# runAsNonRoot: true
+# runAsUser: 1000
+
+tolerations: []
+
+affinity: {}
