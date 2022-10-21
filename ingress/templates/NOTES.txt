@@ -2,4 +2,11 @@
 
 LiveKit Ingress {{ .Values.image.tag | default .Chart.AppVersion }} has been deployed!
 
+To get LoadBalancer details:
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "ingress.fullname" . }}'
+
+  kubectl get svc --namespace {{ .Release.Namespace }} {{ template "ingress.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+  kubectl get svc --namespace {{ .Release.Namespace }} {{ template "ingress.fullname" . }} -o jsonpath='{.spec.ports}'
+
 -------------------------------------------------------------------------------

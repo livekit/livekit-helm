@@ -1,7 +1,7 @@
 replicaCount: 1
 
-# Suggested value for gracefully terminate the pod: 1 hour
-terminationGracePeriodSeconds: 3600
+# Suggested value for gracefully terminate the pod: 3 hours
+terminationGracePeriodSeconds: 10800
 
 ingress:
   api_key: "server-api-key"
