@@ -1,6 +1,6 @@
 apiVersion: v2
 name: ingress
-description: Ingress is used by LiveKit to stream and record rooms.
+description: Ingress is used by LiveKit to ingest streams produced by external workflow
 type: application
 version: 0.0.1
 appVersion: "v0.0.1"
