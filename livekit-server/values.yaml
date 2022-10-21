@@ -8,6 +8,8 @@ image:
   repository: livekit/livekit-server
   pullPolicy: IfNotPresent
 
+imagePullSecrets: []
+
 terminationGracePeriodSeconds: 18000
 
 # configuration for livekit
