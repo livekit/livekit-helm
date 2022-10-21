@@ -4,7 +4,7 @@ metadata:
   name: {{ include "ingress.fullname" . }}
   labels: {{- include "ingress.labels" . | nindent 4 }}
 spec:
-  type: LoadBalancer
+  type: {{ default "LoadBalancer" .Values.ingress.serviceType }}
   ports:
     - port: {{ .Values.loadBalancer.servicePort }}
       protocol: TCP

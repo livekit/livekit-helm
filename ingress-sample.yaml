@@ -22,6 +22,9 @@ ingress:
 
   cpu_cost:
     rtmp_cpu_cost: 2.0
+  # set the Kubernetes serviceType for the ingress service. By default it sets it to "LoadBalancer"
+  # See kubernetes serviceTypes on official documentation: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  serviceType: "LoadBalancer"
 
 # autoscaling requires resources to be defined
 autoscaling:
