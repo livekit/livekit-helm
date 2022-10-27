@@ -17,6 +17,8 @@ spec:
   type: NodePort
   {{- else if eq .Values.loadBalancer.type "aws" }}
   type: LoadBalancer
+  {{- else }}
+  type: ClusterIP
   {{- end }}
   ports:
     - port: {{ .Values.loadBalancer.servicePort }}
