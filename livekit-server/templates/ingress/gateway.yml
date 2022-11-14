@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: livekit-gateway
+  namespace: webrtc
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 443
+        name: https-livekit
+        protocol: HTTPS
+      hosts:
+        - {{ .Values.url }}
+      tls:
+        mode: SIMPLE
+        credentialName: livekit-tls

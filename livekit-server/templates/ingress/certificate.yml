@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: livekit
+  namespace: istio-ingress
+spec:
+  secretName: livekit-tls
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  subject:
+    organizations:
+      - "Invictus Apps, Inc."
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  dnsNames:
+    - {{ .Values.url }}
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

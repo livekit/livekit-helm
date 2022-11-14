@@ -99,6 +99,8 @@ tolerations: []
 
 affinity: {}
 
+url:
+
 config:
   yaml:
     secret:

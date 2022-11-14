@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: livekit
+  namespace: webrtc
+spec:
+  hosts:
+    - {{ .Values.url }}
+  gateways:
+    - livekit-gateway
+  http:
+    - route:
+        - destination:
+            host: livekit-server
+            port:
+              number: 80
