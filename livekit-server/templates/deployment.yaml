@@ -31,19 +31,57 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["--disable-strict-config"]
+      {{- if .Values.config.yaml.secret }}
+      initContainers:
+        - name: merge-secrets
+          image: mikefarah/yq
           env:
             - name: LIVEKIT_CONFIG
               valueFrom:
                 configMapKeyRef:
                   name: {{ include "livekit-server.fullname" . }}
                   key: config.yaml
+            - name: LIVEKIT_SECRET_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.yaml.secret }}
+                  key: {{ .Values.config.yaml.key }}
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - >-
+                echo "$LIVEKIT_CONFIG" > /config/body.yaml &&
+                echo "$LIVEKIT_SECRET_CONFIG" > /config/secrets.yaml &&
+                yq ea '. as $item ireduce ({}; . * $item )' /config/body.yaml /config/secrets.yaml > /config/config.yaml
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      {{- end}}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.config.yaml.secret }}
+          args: ["--disable-strict-config", "--config=/config/config.yaml"]
+          {{- else }}
+          args: ["--disable-strict-config"]
+          {{- end }}
+          {{- if .Values.config.env.secret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.config.env.secret }}
+          {{- end }}
+          env:
+            {{- if .Values.config.yaml.secret }}
+            {{- else }}
+            - name: LIVEKIT_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "livekit-server.fullname" . }}
+                  key: config.yaml
+            {{- end }}
             {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
             - name: LIVEKIT_TURN_CERT
               value: /etc/lkcert/tls.crt
@@ -96,14 +134,18 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
           volumeMounts:
+            - name: config
+              mountPath: /config
+          {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
             - name: lkturncert
               mountPath: /etc/lkcert
               readOnly: true
           {{- end }}
-      {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
       volumes:
+        - name: config
+          emptyDir: {}
+      {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
         - name: lkturncert
           secret:
             secretName: {{ required "tls secret required if turn enabled" .Values.livekit.turn.secretName }}

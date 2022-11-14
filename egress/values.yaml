@@ -41,3 +41,12 @@ securityContext: {}
 tolerations: []
 
 affinity: {}
+
+volumes: {}
+volumeMounts: {}
+
+config:
+  yaml:
+    secret:
+    key:
+  mount:

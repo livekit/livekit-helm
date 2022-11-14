@@ -98,3 +98,10 @@ securityContext:
 tolerations: []
 
 affinity: {}
+
+config:
+  yaml:
+    secret:
+    key:
+  env:
+    secret:
