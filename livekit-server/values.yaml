@@ -13,6 +13,8 @@ imagePullSecrets: []
 terminationGracePeriodSeconds: 18000
 
 # configuration for livekit
+# you may specify any config settings that are valid in livekit-server's
+# config.yaml: https://github.com/livekit/livekit/blob/master/config-sample.yaml
 livekit:
   port: 7880
   log_level: info
@@ -23,19 +25,23 @@ livekit:
     use_external_ip: true
   redis:
     {}
+    # supports sentinels and cluster, see above
     # address:
     # db: 0
     # username:
     # password:
   keys:
     {}
-    # key value pairs
+    # key value pairs (<api_key>: >api_secret>)
   turn:
     enabled: false
     # Must match domain of your tls cert
     # domain: turn.myhost.com
     # secretName: <tlssecret>
     loadBalancerAnnotations: {}
+  # webhook: <webhook configuration>
+  # room: <default settings for new rooms>
+  # region: <set for multi-region deploys>
 
 nameOverride: ""
 fullnameOverride: ""
