@@ -19,7 +19,7 @@ livekit:
     # default ports used
     port_range_start: 50000
     port_range_end: 60000
-    tcp_port: 7801
+    tcp_port: 7881
   redis:
     address: <redis_host:port>
     # db: 0
