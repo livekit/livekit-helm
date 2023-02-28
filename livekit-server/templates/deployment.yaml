@@ -98,7 +98,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: keys-volume
-              mountPath: /keys.yaml
+              mountPath: {{ .Values.livekit.key_file }}
               readOnly: true
           {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
             - name: lkturncert
