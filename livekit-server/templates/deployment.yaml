@@ -99,7 +99,6 @@ spec:
           volumeMounts:
             - name: keys-volume
               mountPath: {{ .Values.livekit.key_file }}
-              readOnly: true
           {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
             - name: lkturncert
               mountPath: /etc/lkcert
