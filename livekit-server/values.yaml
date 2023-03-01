@@ -39,7 +39,7 @@ livekit:
   # webhook: <webhook configuration>
   # room: <default settings for new rooms>
   # region: <set for multi-region deploys>
-  key_file: /keys.yaml
+  key_file: /kitconfig/..data/keys.yaml
 
 keys:
   {}
