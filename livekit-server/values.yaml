@@ -33,7 +33,7 @@ livekit:
   # key value pairs (<api_key>: >api_secret>)
   #keys:
   #  {}
-  key_file: /key_file/..data/keys.yaml
+  key_file: /keys.yaml
   turn:
     enabled: false
     # Must match domain of your tls cert
@@ -46,7 +46,7 @@ livekit:
 
 keyFile:
   enabled: true
-  mountPath: /key_file
+  fileName: keys.yaml
   keys:
     {}
     # key value pairs (<api_key>: >api_secret>)
