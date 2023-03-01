@@ -30,6 +30,10 @@ livekit:
     # db: 0
     # username:
     # password:
+  # key value pairs (<api_key>: >api_secret>)
+  #keys:
+  #  {}
+  key_file: /key_file/..data/keys.yaml
   turn:
     enabled: false
     # Must match domain of your tls cert
@@ -39,11 +43,13 @@ livekit:
   # webhook: <webhook configuration>
   # room: <default settings for new rooms>
   # region: <set for multi-region deploys>
-  key_file: /kitconfig/..data/keys.yaml
 
-keys:
-  {}
-  # key value pairs (<api_key>: >api_secret>)
+keyFile:
+  enabled: true
+  mountPath: /key_file
+  keys:
+    {}
+    # key value pairs (<api_key>: >api_secret>)
 
 nameOverride: ""
 fullnameOverride: ""
