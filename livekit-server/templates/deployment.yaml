@@ -108,7 +108,7 @@ spec:
         - name: keys-volume
           secret:
             secretName: {{ include "livekit-server.fullname" . }}-keys
-            defaultMode: 384
+            defaultMode: 0600
       {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
         - name: lkturncert
           secret:
