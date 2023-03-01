@@ -47,6 +47,7 @@ livekit:
 keyFile:
   enabled: true
   fileName: keys.yaml
+  existingSecret: ""
   keys:
     {}
     # key value pairs (<api_key>: >api_secret>)
