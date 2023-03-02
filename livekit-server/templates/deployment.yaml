@@ -96,24 +96,32 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if or .Values.keyFile.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
           volumeMounts:
+          {{- if .Values.keyFile.enabled }}
             - name: keys-volume
               mountPath: {{ .Values.livekit.key_file }}
               subPath: {{ .Values.livekit.key_file }}
+          {{- end }}
           {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
             - name: lkturncert
               mountPath: /etc/lkcert
               readOnly: true
           {{- end }}
+          {{- end }}
+      {{- if or .Values.keyFile.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
       volumes:
+        {{- if .Values.keyFile.enabled }}
         - name: keys-volume
           secret:
             secretName: {{ include "livekit-server.fullname" . }}-keys
             defaultMode: 0600
+      {{- end }}
       {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
         - name: lkturncert
           secret:
             secretName: {{ required "tls secret required if turn enabled" .Values.livekit.turn.secretName }}
+      {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
