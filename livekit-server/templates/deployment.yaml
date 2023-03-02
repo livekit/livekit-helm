@@ -114,7 +114,7 @@ spec:
         {{- if .Values.keyFile.enabled }}
         - name: keys-volume
           secret:
-            secretName: {{ include "livekit-server.fullname" . }}-keys
+            secretName: {{ (tpl .Values.keyFile.existingSecret .) | default (include "livekit-server.fullname" .) }}
             defaultMode: 0600
       {{- end }}
       {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
