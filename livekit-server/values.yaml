@@ -30,9 +30,13 @@ livekit:
     # db: 0
     # username:
     # password:
+  # key value pairs (<api_key>: >api_secret>)
   keys:
     {}
-    # key value pairs (<api_key>: >api_secret>)
+  # Api keys can be loaded from a file
+  # https://github.com/livekit/livekit/blob/6eaa300949cdfe8fbf6e2ded926c9f8c1a01bc61/pkg/config/config.go#L61
+  # In order to set the api keys when using the key_file parameter configure the keyFile block below 
+  # key_file: keys.yaml
   turn:
     enabled: false
     # Must match domain of your tls cert
@@ -42,6 +46,15 @@ livekit:
   # webhook: <webhook configuration>
   # room: <default settings for new rooms>
   # region: <set for multi-region deploys>
+
+keyFile:
+  enabled: false
+  # Use a pre existing secret, useful to combine with external secret managers
+  # as GCP External Secrets or Hashicorp Vault
+  existingSecret: ""
+  keys:
+    {}
+    # key value pairs (<api_key>: >api_secret>)
 
 nameOverride: ""
 fullnameOverride: ""
