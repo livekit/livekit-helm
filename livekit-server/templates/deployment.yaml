@@ -11,6 +11,10 @@ spec:
   selector:
     matchLabels:
       {{- include "livekit-server.selectorLabels" . | nindent 6 }}
+  {{- if .Values.strategy }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
