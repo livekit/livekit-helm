@@ -84,6 +84,8 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+podHostNetwork: true
+
 podAnnotations:
   sidecar.istio.io/inject: "false"
   linkerd.io/inject: disabled
