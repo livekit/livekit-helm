@@ -54,6 +54,7 @@ spec:
               number: {{ $svcPort }}
   {{- end }}
   {{- end }}
+{{- if ne .Values.loadBalancer.type "gke-vpc-native" }}
 {{- with .Values.loadBalancer }}
   {{- if .tls }}
   tls:
@@ -67,7 +68,8 @@ spec:
       secretName: {{ .secretName | quote }}
       {{- end }}
     {{- end }}
-    {{- end }}
   {{- end }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
