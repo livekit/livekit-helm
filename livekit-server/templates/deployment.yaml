@@ -98,9 +98,9 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if or .Values.keyFile.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
+          {{- if or .Values.storeKeysInSecret.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
           volumeMounts:
-          {{- if .Values.keyFile.enabled }}
+          {{- if .Values.storeKeysInSecret.enabled }}
             - name: keys-volume
               mountPath: {{ .Values.livekit.key_file }}
               subPath: {{ .Values.livekit.key_file }}
@@ -111,12 +111,12 @@ spec:
               readOnly: true
           {{- end }}
           {{- end }}
-      {{- if or .Values.keyFile.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
+      {{- if or .Values.storeKeysInSecret.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
       volumes:
-        {{- if .Values.keyFile.enabled }}
+        {{- if .Values.storeKeysInSecret.enabled }}
         - name: keys-volume
           secret:
-            secretName: {{ (tpl .Values.keyFile.existingSecret .) | default (include "livekit-server.fullname" .) }}
+            secretName: {{ (tpl .Values.storeKeysInSecret.existingSecret .) | default (include "livekit-server.fullname" .) }}
             defaultMode: 0600
       {{- end }}
       {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
