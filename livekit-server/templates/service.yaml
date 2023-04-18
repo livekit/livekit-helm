@@ -23,6 +23,18 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    {{- if and (eq .Values.loadBalancer.type "disable") .Values.livekit.rtc.tcp_port }}
+    - name: rtc-tcp
+      port: {{ .Values.livekit.rtc.tcp_port }}
+      protocol: TCP
+      targetPort: rtc-tcp
+    {{- end }}
+    {{- if and (eq .Values.loadBalancer.type "disable") .Values.livekit.rtc.udp_port }}
+    - name: rtc-udp
+      port: {{ .Values.livekit.rtc.udp_port }}
+      protocol: UDP
+      targetPort: rtc-udp
+    {{- end }}
     {{- if .Values.livekit.prometheus_port }}
     - port: {{ .Values.livekit.prometheus_port }}
       targetPort: metrics

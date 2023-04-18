@@ -32,8 +32,10 @@ spec:
       serviceAccountName: {{ include "livekit-server.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.podHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
@@ -100,17 +102,32 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
+          {{- if or .Values.storeKeysInSecret.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
           volumeMounts:
+          {{- if .Values.storeKeysInSecret.enabled }}
+            - name: keys-volume
+              mountPath: {{ .Values.livekit.key_file }}
+              subPath: {{ .Values.livekit.key_file }}
+          {{- end }}
+          {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
             - name: lkturncert
               mountPath: /etc/lkcert
               readOnly: true
           {{- end }}
-      {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
+          {{- end }}
+      {{- if or .Values.storeKeysInSecret.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
       volumes:
+        {{- if .Values.storeKeysInSecret.enabled }}
+        - name: keys-volume
+          secret:
+            secretName: {{ (tpl .Values.storeKeysInSecret.existingSecret .) | default (include "livekit-server.fullname" .) }}
+            defaultMode: 0600
+      {{- end }}
+      {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
         - name: lkturncert
           secret:
             secretName: {{ required "tls secret required if turn enabled" .Values.livekit.turn.secretName }}
+      {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
