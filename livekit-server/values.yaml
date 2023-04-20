@@ -124,4 +124,5 @@ tolerations: []
 
 affinity: {}
 
-strategy: {}
+# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#deploymentstrategy-v1-apps
+deploymentStrategy: {}

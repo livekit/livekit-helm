@@ -11,9 +11,9 @@ spec:
   selector:
     matchLabels:
       {{- include "livekit-server.selectorLabels" . | nindent 6 }}
-  {{- if .Values.strategy }}
+  {{- if .Values.deploymentStrategy }}
   strategy:
-    {{- toYaml .Values.strategy | nindent 4 }}
+    {{- toYaml .Values.deploymentStrategy | nindent 4 }}
   {{- end }}
   template:
     metadata:
