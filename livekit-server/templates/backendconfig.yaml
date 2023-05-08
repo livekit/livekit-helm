@@ -1,4 +1,4 @@
-{{- if or (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") -}}
+{{- if or (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") (eq .Values.loadBalancer.type "gclb") -}}
 apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:

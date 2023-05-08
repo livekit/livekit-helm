@@ -11,9 +11,13 @@ metadata:
   {{- else if or (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") }}
   annotations:
     cloud.google.com/backend-config: '{"ports": {"{{ .Values.loadBalancer.servicePort }}":"{{ include "livekit-server.fullname" . }}"}}'
+  {{- else if eq .Values.loadBalancer.type "gclb" }}
+  annotations:
+    cloud.google.com/backend-config: '{"ports": {"{{ .Values.loadBalancer.servicePort }}":"{{ include "livekit-server.fullname" . }}"}}'
+    cloud.google.com/neg: '{"exposed_ports": {"{{ .Values.loadBalancer.servicePort }}":{}}}'
   {{- end }}
 spec:
-  {{- if or (eq .Values.loadBalancer.type "alb") (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") (eq .Values.loadBalancer.type "do") }}
+  {{- if or (eq .Values.loadBalancer.type "alb") (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") (eq .Values.loadBalancer.type "do") (eq .Values.loadBalancer.type "gclb")}}
   type: NodePort
   {{- else if eq .Values.loadBalancer.type "aws" }}
   type: LoadBalancer
@@ -23,13 +27,13 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-    {{- if and (eq .Values.loadBalancer.type "disable") .Values.livekit.rtc.tcp_port }}
+    {{- if and (or (eq .Values.loadBalancer.type "disable") (eq .Values.loadBalancer.type "gclb")) .Values.livekit.rtc.tcp_port }}
     - name: rtc-tcp
       port: {{ .Values.livekit.rtc.tcp_port }}
       protocol: TCP
       targetPort: rtc-tcp
     {{- end }}
-    {{- if and (eq .Values.loadBalancer.type "disable") .Values.livekit.rtc.udp_port }}
+    {{- if and (or (eq .Values.loadBalancer.type "disable") (eq .Values.loadBalancer.type "gclb")) .Values.livekit.rtc.udp_port }}
     - name: rtc-udp
       port: {{ .Values.livekit.rtc.udp_port }}
       protocol: UDP
