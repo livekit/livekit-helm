@@ -1,0 +1,41 @@
+# Deploy LiveKit into a VPC-native GKE cluster
+# see https://cloud.google.com/kubernetes-engine/docs/concepts/alias-ips
+
+replicaCount: 2
+
+# Refer to https://docs.livekit.io/deploy/kubernetes/ for instructions
+
+livekit:
+  rtc:
+    use_external_ip: true
+  redis:
+    address: <redis-address>:6379
+  keys:
+    <key>: <secret>
+  turn:
+    enabled: true
+    domain: <turn-address>
+    tls_port: 3478
+    secretName: <turn-tls-secret>
+
+loadBalancer:
+  type: gke-vpc-native
+  tls:
+    - hosts:
+        - <server-address>
+      secretName: <server-tls-secret>
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+
+# resources are set assuming a 8 core instance
+resources:
+  limits:
+    cpu: 7500m
+    memory: 2048Mi
+  requests:
+    cpu: 7000m
+    memory: 1024Mi
