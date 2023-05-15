@@ -7,12 +7,13 @@ ingress:
   api_key: "server-api-key"
   api_secret: "server-api-secret"
   ws_url: "ws://livekit-host:<port>"
-  log_level: info
+  logging:
+    level: info
   health_port: 7888
   prometheus_port: 7889
   http_relay_port: 9090
   rtmp_port: 1935
-  
+
   redis:
     address: <redis_host:port>
     # db: 0
@@ -34,8 +35,8 @@ autoscaling:
   maxReplicas: 5
   targetCPUUtilizationPercentage: 60
 #  targetMemoryUtilizationPercentage: 60
-  # for use with prometheus adapter - the ingress service outputs a prometheus metric called livekit_ingress_available
-  # this can be used to ensure a certain number or percentage of instances are available
+# for use with prometheus adapter - the ingress service outputs a prometheus metric called livekit_ingress_available
+# this can be used to ensure a certain number or percentage of instances are available
 #  custom:
 #    metricName: my_metric_name
 #    targetAverageValue: 70
@@ -69,7 +70,8 @@ podAnnotations:
 podSecurityContext: {}
 # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
