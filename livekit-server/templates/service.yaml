@@ -11,7 +11,6 @@ metadata:
   {{- else if or (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") (eq .Values.loadBalancer.type "gke-vpc-native") }}
     cloud.google.com/backend-config: '{"ports": {"{{ .Values.loadBalancer.servicePort }}":"{{ include "livekit-server.fullname" . }}"}}'
   {{- else if eq .Values.loadBalancer.type "gclb" }}
-  annotations:
     cloud.google.com/backend-config: '{"ports": {"{{ .Values.loadBalancer.servicePort }}":"{{ include "livekit-server.fullname" . }}"}}'
     cloud.google.com/neg: '{"exposed_ports": {"{{ .Values.loadBalancer.servicePort }}":{}}}'
   {{- end }}
