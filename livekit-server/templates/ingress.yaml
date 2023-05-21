@@ -55,21 +55,21 @@ spec:
   {{- end }}
   {{- end }}
 {{- if ne .Values.loadBalancer.type "gke-vpc-native" }}
-  {{- with .Values.loadBalancer }}
-    {{- if .tls }}
-    tls:
-      {{- range .tls }}
-      {{- if .hosts }}
-      - hosts:
-          {{- range .hosts }}
-          - {{ . | quote }}
-          {{- end }}
-        {{- if .secretName }}
-        secretName: {{ .secretName | quote }}
+{{- with .Values.loadBalancer }}
+  {{- if .tls }}
+  tls:
+    {{- range .tls }}
+    {{- if .hosts }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
         {{- end }}
-      {{- end }}
+      {{- if .secretName }}
+      secretName: {{ .secretName | quote }}
       {{- end }}
     {{- end }}
+    {{- end }}
   {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
