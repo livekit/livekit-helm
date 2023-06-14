@@ -15,7 +15,7 @@ metadata:
     cloud.google.com/neg: '{"ingress": true}'
   {{- end }}
 spec:
-  {{- if or (eq .Values.loadBalancer.type "alb") (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") (eq .Values.loadBalancer.type "do") }}
+  {{- if or (eq .Values.loadBalancer.type "alb") (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") (eq .Values.loadBalancer.type "do") (eq .Values.loadBalancer.type "aliyun")}}
   type: NodePort
   {{- else if eq .Values.loadBalancer.type "aws" }}
   type: LoadBalancer

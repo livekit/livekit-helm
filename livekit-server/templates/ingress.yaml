@@ -29,6 +29,7 @@ metadata:
   {{- if eq .Values.loadBalancer.type "do" }}
     cert-manager.io/cluster-issuer: {{ .Values.loadBalancer.clusterIssuer }}
   {{- end }}
+
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: networking.k8s.io/v1
 {{- else }}
@@ -37,6 +38,9 @@ apiVersion: extensions/v1beta1
 spec:
   {{- if eq .Values.loadBalancer.type "do" }}
   ingressClassName: nginx
+  {{- end }}
+  {{- if eq .Values.loadBalancer.type "aliyun" }}
+  ingressClassName: alb
   {{- end }}
   rules:
   # In order to work with cert manager on DO, we cannot set us as a default backend
