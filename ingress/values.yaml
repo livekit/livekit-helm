@@ -40,6 +40,8 @@ serviceAccount:
   annotations: {}
   name: ""
 
+podHostNetwork: true
+
 podAnnotations:
   sidecar.istio.io/inject: "false"
   linkerd.io/inject: disabled
