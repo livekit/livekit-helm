@@ -12,5 +12,9 @@ spec:
     - port: {{ .Values.ingress.rtmp_port }}
       protocol: TCP
       name: rtmp
+    - port: {{ .Values.ingress.whip_port }}
+      protocol: TCP
+      name: whip
+
   selector:
     {{- include "ingress.selectorLabels" . | nindent 4 }}

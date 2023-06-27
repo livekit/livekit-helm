@@ -24,6 +24,10 @@ spec:
       serviceAccountName: {{ include "ingress.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.podHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
@@ -51,6 +55,11 @@ spec:
             {{- if .Values.ingress.rtmp_port }}
             - name: rtmp-port
               containerPort: {{ .Values.ingress.rtmp_port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.ingress.whip_port }}
+            - name: whip-port
+              containerPort: {{ .Values.ingress.whip_port }}
               protocol: TCP
             {{- end }}
             {{- if .Values.ingress.prometheus_port }}
