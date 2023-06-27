@@ -57,6 +57,11 @@ spec:
               containerPort: {{ .Values.ingress.rtmp_port }}
               protocol: TCP
             {{- end }}
+            {{- if .Values.ingress.whip_port }}
+            - name: whip-port
+              containerPort: {{ .Values.ingress.whip_port }}
+              protocol: TCP
+            {{- end }}
             {{- if .Values.ingress.prometheus_port }}
             - name: metrics
               containerPort: {{ .Values.ingress.prometheus_port }}
