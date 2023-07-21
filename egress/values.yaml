@@ -36,7 +36,10 @@ podAnnotations:
 
 podSecurityContext: {}
 
-securityContext: {}
+securityContext:
+  capabilities:
+    add:
+      - SYS_ADMIN
 
 tolerations: []
 
