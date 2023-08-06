@@ -34,10 +34,10 @@ livekit:
     enabled: true
     # must match domain of your TLS cert
     domain: turn.myhost.com
-    # tls_port must be 443 if turn load balancer is disabled
+    # TURN/TLS port over TCP. It must be 443 if TURN load balancer is disabled
     tls_port: 3478
-    # udp_port should be 443 for best connectivity through firewalls
-    udp_port: 443
+    # TURN/UDP port, must be exposed on the firewall
+    udp_port: 3478
     # uncomment if you will manage TLS termination for TURN, secretName is not used
     # when external_tls is set
     # external_tls: true
