@@ -16,6 +16,7 @@ ingress:
   whip_port: 8080
   rtc_config:
     use_external_ip: true
+    udp_port: 7885
 
   redis:
     address: <redis_host:port>
