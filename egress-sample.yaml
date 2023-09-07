@@ -10,6 +10,7 @@ egress:
   log_level: info
   health_port: 8080
   prometheus_port: 9090
+  enable_chrome_sandbox: true
   # template_base: "https://your-custom-template.com"
   redis:
     address: <redis_host:port>
