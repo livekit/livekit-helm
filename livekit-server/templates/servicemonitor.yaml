@@ -1,0 +1,20 @@
+{{- if and .Values.serviceMonitor.create .Values.livekit.prometheus_port -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "livekit-server.serviceMonitorName" . }}
+  labels:
+    {{- include "livekit-server.labels" . | nindent 4 }}
+  {{- with .Values.serviceMonitor.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  endpoints:
+    - port: metrics
+      path: /
+      interval: {{ .Values.serviceMonitor.interval }}
+  selector:
+    matchLabels:
+      {{- include "livekit-server.selectorLabels" . | nindent 6 }}
+{{- end }}
