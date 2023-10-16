@@ -60,3 +60,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the name of the service monitor to use
+*/}}
+{{- define "livekit-server.serviceMonitorName" -}}
+{{- if .Values.serviceMonitor.create }}
+{{- default (include "livekit-server.fullname" .) .Values.serviceMonitor.name }}
+{{- else }}
+{{- default "default" .Values.serviceMonitor.name }}
+{{- end }}
+{{- end }}
