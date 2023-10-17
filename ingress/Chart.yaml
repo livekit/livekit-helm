@@ -2,8 +2,8 @@ apiVersion: v2
 name: ingress
 description: Ingress is used by LiveKit to ingest streams produced by external workflows
 type: application
-version: 1.1.0
-appVersion: "v1.1.0"
+version: 1.2.0
+appVersion: "v1.2.0"
 
 sources:
   - https://github.com/livekit/ingress
