@@ -68,6 +68,9 @@ loadBalancer:
   servicePort: 80
   annotations: {}
 
+turnLoadbalancer:
+  enable: true
+
 autoscaling:
   enabled: false
   minReplicas: 1
