@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: {{ .Values.deploymentType }}
 metadata:
   name: {{ include "livekit-server.fullname" . }}
   labels:
@@ -9,13 +9,13 @@ metadata:
     {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
   {{- end }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
+  {{- if and (not .Values.autoscaling.enabled) (eq .Values.deploymentType "Deployment") }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       {{- include "livekit-server.selectorLabels" . | nindent 6 }}
-  {{- if .Values.deploymentStrategy }}
+  {{- if and (.Values.deploymentStrategy) (eq .Values.deploymentType "Deployment") }}
   strategy:
     {{- toYaml .Values.deploymentStrategy | nindent 4 }}
   {{- end }}

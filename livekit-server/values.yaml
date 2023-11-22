@@ -4,6 +4,9 @@
 
 replicaCount: 1
 
+# deploymentType can be one of "Deployment", "DaemonSet"
+deploymentType: Deployment
+
 image:
   repository: livekit/livekit-server
   pullPolicy: IfNotPresent
