@@ -7,7 +7,7 @@ on:
       - 'ingress/**'
       - 'egress/**'
       - 'livekit-server/**'
-      - '.github/workflows/'
+      - '.github/workflows/test.yaml'
 
 jobs:
   lint-test:
