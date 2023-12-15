@@ -2,6 +2,7 @@
 name: Lint, Install, and Test Charts
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - 'ingress/**'
