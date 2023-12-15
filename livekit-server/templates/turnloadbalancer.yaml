@@ -1,4 +1,4 @@
-{{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port }}
+{{- if and (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port) .Values.turnLoadbalancer.enable }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -10,7 +10,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ default "LoadBalancer" .Values.livekit.turn.serviceType }} 
+  type: {{ default "LoadBalancer" .Values.livekit.turn.serviceType }}
   ports:
     - port: 443
       targetPort: {{ .Values.livekit.turn.tls_port }}
