@@ -71,3 +71,10 @@ Create the name of the service monitor to use
 {{- default "default" .Values.serviceMonitor.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the name of the service monitor secret to use
+*/}}
+{{- define "livekit-server.serviceMonitorSecretName" -}}
+{{- print .Values.serviceMonitor.name "Secret" }}
+{{- end }}
