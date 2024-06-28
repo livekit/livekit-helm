@@ -1,4 +1,4 @@
-{{- if and .Values.serviceMonitor.create .Values.livekit.prometheus_port -}}
+{{- if and .Values.serviceMonitor.create .Values.livekit.prometheus.port -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -14,6 +14,15 @@ spec:
     - port: metrics
       path: /
       interval: {{ .Values.serviceMonitor.interval }}
+      {{- if and (not .Values.storeKeysInSecret.existingSecret) .Values.storeKeysInSecret.enabled }}
+      basicAuth:
+        password:
+          name: {{ include "livekit-server.serviceMonitorSecretName" . }}
+          key: password
+        username:
+          name: {{ include "livekit-server.serviceMonitorSecretName" . }}
+          key: username
+      {{- end}}
   selector:
     matchLabels:
       {{- include "livekit-server.selectorLabels" . | nindent 6 }}
