@@ -130,6 +130,9 @@ affinity: {}
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#deploymentstrategy-v1-apps
 deploymentStrategy: {}
 
+# can be set to StatefulSet to get predictive (down)scaling behavior
+deploymentType: Deployment
+
 deploymentAnnotations: {}
 
 # Specifies configuration gke backendconfig
