@@ -26,7 +26,7 @@ metadata:
     kubernetes.io/ingress.class: "gce"
   {{- end }}
   # DO with cert manager
-  {{- if eq .Values.loadBalancer.type "do" }}
+  {{- if or (eq .Values.loadBalancer.type "do") (eq .Values.loadBalancer.type "traefik") }}
     cert-manager.io/cluster-issuer: {{ .Values.loadBalancer.clusterIssuer }}
   {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
@@ -37,6 +37,8 @@ apiVersion: extensions/v1beta1
 spec:
   {{- if eq .Values.loadBalancer.type "do" }}
   ingressClassName: nginx
+  {{- else if eq .Values.loadBalancer.type "traefik" }}
+  ingressClassName: traefik
   {{- end }}
   rules:
   # In order to work with cert manager on DO, we cannot set us as a default backend

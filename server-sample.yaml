@@ -49,7 +49,7 @@ livekit:
     serviceType: "LoadBalancer"
 
 loadBalancer:
-  # valid values: disable, alb, aws, gke, gke-managed-cert, gke-native-vpc, do
+  # valid values: disable, alb, aws, gke, gke-managed-cert, gke-native-vpc, do, traefik
   # on AWS, we recommend using alb load balancer, which supports TLS termination
   # * in order to use alb, aws-ingress-controller must be installed
   #   https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
@@ -57,6 +57,8 @@ loadBalancer:
   #   and set staticIpName to your reserved static IP, and certificateName to be
   #   name of the managed cert
   # * for do uncomment clusterIssuer with your cert manager issuer
+  # * for traefik uncomment clusterIssuer with your cert manager issuer as well
+  #   this will set the ingressClassName to traefik
   type: disable
   # staticIpName: <nameofIpAddressCreated>
   # certificateName: <nameOfCert>
