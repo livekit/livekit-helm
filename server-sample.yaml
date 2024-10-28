@@ -25,6 +25,7 @@ livekit:
     # db: 0
     # username:
     # password:
+    # existingSecret: 
     # use_tls: true
   # one or more API key/secret pairs
   # see https://docs.livekit.io/guides/getting-started/#generate-api-key-and-secret
