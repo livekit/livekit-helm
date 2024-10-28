@@ -60,6 +60,13 @@ spec:
             - name: LIVEKIT_TURN_KEY
               value: /etc/lkcert/tls.key
             {{- end }}
+            {{- if .Values.livekit.redis.existingSecret }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.livekit.redis.existingSecret }}
+                  key: password
+            {{- end}}
           ports:
             - name: http
               containerPort: {{ .Values.livekit.port }}
