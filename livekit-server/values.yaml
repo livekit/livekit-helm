@@ -30,6 +30,7 @@ livekit:
     # db: 0
     # username:
     # password:
+    # existingSecret: 
   # key value pairs (<api_key>: >api_secret>)
   keys:
     {}
