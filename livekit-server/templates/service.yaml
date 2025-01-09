@@ -40,8 +40,8 @@ spec:
       protocol: UDP
       targetPort: rtc-udp
     {{- end }}
-    {{- if .Values.livekit.prometheus_port }}
-    - port: {{ .Values.livekit.prometheus_port }}
+    {{- if (include "livekit-server.prometheus_port" .) }}
+    - port: {{ include "livekit-server.prometheus_port" . }}
       targetPort: metrics
       protocol: TCP
       name: metrics
