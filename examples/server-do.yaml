@@ -4,7 +4,7 @@ replicaCount: 2
 
 livekit:
   rtc:
-    use_external_ip: true
+    useExternalIp: true
   redis:
     address: <redis-host>:6379
   keys:
@@ -12,7 +12,7 @@ livekit:
   turn:
     enabled: true
     domain: <your-turn-domain>
-    tls_port: 3478
+    tlsPort: 3478
     secretName: <turn-tls-secret>
 
 loadBalancer:

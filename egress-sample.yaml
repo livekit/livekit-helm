@@ -4,37 +4,37 @@ replicaCount: 1
 terminationGracePeriodSeconds: 3600
 
 egress:
-  api_key: "server-api-key"
-  api_secret: "server-api-secret"
-  ws_url: "ws://livekit-host:<port>"
-  log_level: info
-  health_port: 8080
-  prometheus_port: 9090
-  enable_chrome_sandbox: true
-  # template_base: "https://your-custom-template.com"
+  apiKey: "server-api-key"
+  apiSecret: "server-api-secret"
+  wsUrl: "ws://livekit-host:<port>"
+  logLevel: info
+  healthPort: 8080
+  prometheusPort: 9090
+  enableChromeSandbox: true
+  # templateBase: "https://your-custom-template.com"
   redis:
     address: <redis_host:port>
     # db: 0
     # username:
     # password:
-    # use_tls: false
+    # useTls: false
   s3:
-    access_key: "access_key"
+    accessKey: "access_key"
     secret: "secret"
     region: "us-west-2"
     # endpoint:
     bucket: "my-egress"
   # azure:
-    # account_name:
-    # account_key:
-    # container_name:
+    # accountName:
+    # accountKey:
+    # containerName:
   # gcp:
-    # credentials_json:
+    # credentialsJson:
     # bucket:
-  # cpu_cost:
-    # room_composite_cpu_cost: 3
-    # track_composite_cpu_cost: 2
-    # track_cpu_cost: 1
+  # cpuCost:
+    # roomCompositeCpuCost: 3
+    # trackCompositeCpuCost: 2
+    # trackCpuCost: 1
 
 # autoscaling requires resources to be defined
 autoscaling:

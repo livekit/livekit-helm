@@ -42,29 +42,29 @@ spec:
                   name: {{ include "ingress.fullname" . }}
                   key: config.yaml
           ports:
-            {{- if .Values.ingress.health_port }}
+            {{- if .Values.ingress.healthPort }}
             - name: health
-              containerPort: {{ .Values.ingress.health_port }}
+              containerPort: {{ .Values.ingress.healthPort }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.ingress.http_relay_port }}
+            {{- if .Values.ingress.httpRelayPort }}
             - name: http-relay
-              containerPort: {{ .Values.ingress.http_relay_port }}
+              containerPort: {{ .Values.ingress.httpRelayPort }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.ingress.rtmp_port }}
+            {{- if .Values.ingress.rtmpPort }}
             - name: rtmp-port
-              containerPort: {{ .Values.ingress.rtmp_port }}
+              containerPort: {{ .Values.ingress.rtmpPort }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.ingress.whip_port }}
+            {{- if .Values.ingress.whipPort }}
             - name: whip-port
-              containerPort: {{ .Values.ingress.whip_port }}
+              containerPort: {{ .Values.ingress.whipPort }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.ingress.prometheus_port }}
+            {{- if .Values.ingress.prometheusPort }}
             - name: metrics
-              containerPort: {{ .Values.ingress.prometheus_port }}
+              containerPort: {{ .Values.ingress.prometheusPort }}
               protocol: TCP
             {{- end }}
           livenessProbe:

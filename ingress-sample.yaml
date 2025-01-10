@@ -4,31 +4,31 @@ replicaCount: 1
 terminationGracePeriodSeconds: 10800
 
 ingress:
-  api_key: "server-api-key"
-  api_secret: "server-api-secret"
-  ws_url: "ws://livekit-host:<port>"
+  apiKey: "server-api-key"
+  apiSecret: "server-api-secret"
+  wsUrl: "ws://livekit-host:<port>"
   logging:
     level: info
-  health_port: 7888
-  prometheus_port: 7889
-  http_relay_port: 9090
-  rtmp_port: 1935
-  whip_port: 8080
-  rtc_config:
-    use_external_ip: true
-    udp_port: 7885
+  healthPort: 7888
+  prometheusPort: 7889
+  httpRelayPort: 9090
+  rtmpPort: 1935
+  whipPort: 8080
+  rtcConfig:
+    useExternalIp: true
+    udpPort: 7885
 
   redis:
     address: <redis_host:port>
     # db: 0
     # username:
     # password:
-    # use_tls: false
+    # useTls: false
 
-  cpu_cost:
-    rtmp_cpu_cost: 2.0
-    whip_cpu_cost: 2.0
-    whip_bypass_transcoding_cpu_cost: 0.1
+  cpuCost:
+    rtmpCpuCost: 2.0
+    whipCpuCost: 2.0
+    whipBypassTranscodingCpuCost: 0.1
   # set the Kubernetes serviceType for the ingress service. By default it sets it to "LoadBalancer"
   # See kubernetes serviceTypes on official documentation: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   serviceType: "LoadBalancer"

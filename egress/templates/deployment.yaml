@@ -38,14 +38,14 @@ spec:
                   name: {{ include "egress.fullname" . }}
                   key: config.yaml
           ports:
-            {{- if .Values.egress.health_port }}
+            {{- if .Values.egress.healthPort }}
             - name: health
-              containerPort: {{ .Values.egress.health_port }}
+              containerPort: {{ .Values.egress.healthPort }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.egress.prometheus_port }}
+            {{- if .Values.egress.prometheusPort }}
             - name: metrics
-              containerPort: {{ .Values.egress.prometheus_port }}
+              containerPort: {{ .Values.egress.prometheusPort }}
               protocol: TCP
             {{- end }}
           livenessProbe:

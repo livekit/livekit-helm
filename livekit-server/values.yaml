@@ -17,12 +17,12 @@ terminationGracePeriodSeconds: 18000
 # config.yaml: https://github.com/livekit/livekit/blob/master/config-sample.yaml
 livekit:
   port: 7880
-  log_level: info
+  logLevel: info
   rtc:
-    tcp_port: 7881
-    port_range_start: 50000
-    port_range_end: 60000
-    use_external_ip: true
+    tcpPort: 7881
+    portRangeStart: 50000
+    portRangeEnd: 60000
+    useExternalIp: true
   redis:
     {}
     # supports sentinels and cluster, see above
@@ -30,13 +30,13 @@ livekit:
     # db: 0
     # username:
     # password:
-  # key value pairs (<api_key>: >api_secret>)
+  # key value pairs (<apiKey>: >api_secret>)
   keys:
     {}
   # Api keys can be loaded from a file
   # https://github.com/livekit/livekit/blob/6eaa300949cdfe8fbf6e2ded926c9f8c1a01bc61/pkg/config/config.go#L61
   # In order to set the api keys when using the key_file parameter configure the storeKeysInSecret block below
-  # key_file: keys.yaml
+  # keyFile: keys.yaml
   turn:
     enabled: false
     # Must match domain of your tls cert
@@ -55,10 +55,10 @@ storeKeysInSecret:
   existingSecret: ""
   # Define your API keys and secrets as key-value pairs here. These will be stored in the secret.
   # Example: keys:
-  #           my_api_key: my_api_secret
+  #           myApiKey: my_api_secret
   keys:
     {}
-    # key value pairs (<api_key>: >api_secret>)
+    # key value pairs (<apiKey>: >api_secret>)
 
 nameOverride: ""
 fullnameOverride: ""

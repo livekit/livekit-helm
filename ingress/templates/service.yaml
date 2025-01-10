@@ -11,10 +11,10 @@ spec:
       protocol: TCP
       name: ws
     {{- end }}
-    - port: {{ .Values.ingress.rtmp_port }}
+    - port: {{ .Values.ingress.rtmpPort }}
       protocol: TCP
       name: rtmp
-    - port: {{ .Values.ingress.whip_port }}
+    - port: {{ .Values.ingress.whipPort }}
       protocol: TCP
       name: whip
 

@@ -11,20 +11,20 @@ image:
 ingress:
   logging:
     level: info
-  health_port: 7888
-  prometheus_port: 7889
-  http_relay_port: 9090
-  rtmp_port: 1935
-  whip_port: 8080
-  rtc_config:
-    use_external_ip: true
-    udp_port: 7885
+  healthPort: 7888
+  prometheusPort: 7889
+  httpRelayPort: 9090
+  rtmpPort: 1935
+  whipPort: 8080
+  rtcConfig:
+    useExternalIp: true
+    udpPort: 7885
   redis: {}
 
-  cpu_cost:
-    rtmp_cpu_cost: 2
-    whip_cpu_cost: 2
-    whip_bypass_transcoding_cpu_cost: 0.1
+  cpuCost:
+    rtmpCpuCost: 2
+    whipCpuCost: 2
+    whipBypassTranscodingCpuCost: 0.1
 
 loadBalancer:
   servicePort: 7888

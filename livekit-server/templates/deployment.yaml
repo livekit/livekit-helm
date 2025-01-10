@@ -76,10 +76,10 @@ spec:
               hostPort: {{ .Values.livekit.rtc.tcp_port }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.livekit.prometheus_port }}
+            {{- if .Values.livekit.prometheusPort }}
             - name: metrics
-              containerPort: {{ .Values.livekit.prometheus_port }}
-              hostPort: {{ .Values.livekit.prometheus_port }}
+              containerPort: {{ .Values.livekit.prometheusPort }}
+              hostPort: {{ .Values.livekit.prometheusPort }}
               protocol: TCP
             {{- end }}
             {{- if .Values.livekit.turn.enabled }}
@@ -110,8 +110,8 @@ spec:
           volumeMounts:
           {{- if .Values.storeKeysInSecret.enabled }}
             - name: keys-volume
-              mountPath: {{ .Values.livekit.key_file }}
-              subPath: {{ .Values.livekit.key_file }}
+              mountPath: {{ .Values.livekit.keyFile }}
+              subPath: {{ .Values.livekit.keyFile }}
           {{- end }}
           {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
             - name: lkturncert

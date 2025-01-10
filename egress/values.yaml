@@ -9,9 +9,9 @@ image:
   pullPolicy: IfNotPresent
 
 egress:
-  log_level: info
-  health_port: 8080
-  prometheus_port: 9090
+  logLevel: info
+  healthPort: 8080
+  prometheusPort: 9090
 
 terminationGracePeriodSeconds: 3600
 

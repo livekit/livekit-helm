@@ -12,20 +12,20 @@ terminationGracePeriodSeconds: 18000
 livekit:
   # port: 7880
   # Uncomment to enable prometheus metrics
-  # prometheus_port: 6789
-  log_level: info
+  # prometheusPort: 6789
+  logLevel: info
   rtc:
-    use_external_ip: true
+    useExternalIp: true
     # default ports used
-    port_range_start: 50000
-    port_range_end: 60000
-    tcp_port: 7881
+    portRangeStart: 50000
+    portRangeEnd: 60000
+    tcpPort: 7881
   redis:
     address: <redis_host:port>
     # db: 0
     # username:
     # password:
-    # use_tls: true
+    # useTls: true
   # one or more API key/secret pairs
   # see https://docs.livekit.io/guides/getting-started/#generate-api-key-and-secret
   keys:
@@ -35,12 +35,12 @@ livekit:
     # must match domain of your TLS cert
     domain: turn.myhost.com
     # TURN/TLS port over TCP. It must be 443 if TURN load balancer is disabled
-    tls_port: 3478
+    tlsPort: 3478
     # TURN/UDP port, must be exposed on the firewall
-    udp_port: 3478
+    udpPort: 3478
     # uncomment if you will manage TLS termination for TURN, secretName is not used
     # when external_tls is set
-    # external_tls: true
+    # externalTls: true
     # Kubernetes Secret containing TLS cert for <turn.myhost.com>
     # See https://docs.livekit.io/deploy/kubernetes/#importing-ssl-certificates
     secretName: <tlssecret>
