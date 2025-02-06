@@ -1,4 +1,4 @@
-{{- if and .Values.serviceMonitor.create .Values.livekit.prometheus_port -}}
+{{- if and .Values.serviceMonitor.create (include "livekit-server.prometheus_port" .) -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
