@@ -3,6 +3,10 @@ kind: Service
 metadata:
   name: {{ include "ingress.fullname" . }}
   labels: {{- include "ingress.labels" . | nindent 4 }}
+  {{- with .Values.loadBalancer.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ default "LoadBalancer" .Values.ingress.serviceType }}
   ports:
