@@ -3,6 +3,10 @@ kind: Service
 metadata:
   name: {{ include "ingress.fullname" . }}
   labels: {{- include "ingress.labels" . | nindent 4 }}
+  {{- with .Values.loadBalancer.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ default "LoadBalancer" .Values.ingress.serviceType }}
   ports:
@@ -14,9 +18,16 @@ spec:
     - port: {{ .Values.ingress.rtmp_port }}
       protocol: TCP
       name: rtmp
+    {{- if and .Values.ingress.whip_port (gt (int .Values.ingress.whip_port) 0) }}
     - port: {{ .Values.ingress.whip_port }}
       protocol: TCP
       name: whip
-
+    {{- end }}
+    {{- if .Values.ingress.prometheus_port }}
+    - port: {{ .Values.ingress.prometheus_port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+    {{- end }}
   selector:
     {{- include "ingress.selectorLabels" . | nindent 4 }}

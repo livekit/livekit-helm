@@ -71,3 +71,14 @@ Create the name of the service monitor to use
 {{- default "default" .Values.serviceMonitor.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Prometheus port
+*/}}
+{{- define "livekit-server.prometheus_port" -}}
+{{- if .Values.livekit.prometheus }}
+{{- .Values.livekit.prometheus.port }}
+{{- else }}
+{{- default "" .Values.livekit.prometheus_port }}
+{{- end }}
+{{- end }}
