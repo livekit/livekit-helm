@@ -22,6 +22,12 @@ spec:
     - port: {{ .Values.ingress.whip_port }}
       protocol: TCP
       name: whip
-
+    {{- end }}
+    {{- if .Values.ingress.prometheus_port }}
+    - port: {{ .Values.ingress.prometheus_port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+    {{- end }}
   selector:
     {{- include "ingress.selectorLabels" . | nindent 4 }}
