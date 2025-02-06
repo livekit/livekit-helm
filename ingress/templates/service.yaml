@@ -18,6 +18,7 @@ spec:
     - port: {{ .Values.ingress.rtmp_port }}
       protocol: TCP
       name: rtmp
+    {{- if and .Values.ingress.whip_port (gt (int .Values.ingress.whip_port) 0) }}
     - port: {{ .Values.ingress.whip_port }}
       protocol: TCP
       name: whip
