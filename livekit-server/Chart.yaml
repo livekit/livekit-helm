@@ -2,7 +2,7 @@ apiVersion: v2
 name: livekit-server
 description: Real-time infrastructure for developers. LiveKit is the open source stack for streaming audio, video, and data.
 type: application
-version: 1.8.3
+version: 1.8.4
 appVersion: "v1.8.3"
 
 sources:

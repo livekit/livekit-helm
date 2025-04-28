@@ -8,7 +8,7 @@ metadata:
     {{- include "livekit-server.labels" . | nindent 4 }}
   annotations:
   # custom annotations
-  {{- with .Values.loadBalancer.annotations }}
+  {{- with .Values.loadBalancer.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
   # AWS ALB
@@ -37,6 +37,10 @@ apiVersion: extensions/v1beta1
 spec:
   {{- if eq .Values.loadBalancer.type "do" }}
   ingressClassName: nginx
+  {{- else -}}
+  {{- with .Values.loadBalancer.ingressClassName }}
+  ingressClassName: {{ . | quote }}
+  {{- end }}
   {{- end }}
   rules:
   # In order to work with cert manager on DO, we cannot set us as a default backend

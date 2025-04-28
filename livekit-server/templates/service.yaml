@@ -17,8 +17,12 @@ metadata:
   {{- if eq .Values.loadBalancer.type "gke-vpc-native" }}
     cloud.google.com/neg: '{"ingress": true}'
   {{- end }}
+  # custom annotations
+  {{- with .Values.loadBalancer.extraAnnotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  {{- if or (eq .Values.loadBalancer.type "alb") (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") (eq .Values.loadBalancer.type "do") (eq .Values.loadBalancer.type "gclb")}}
+  {{- if or (eq .Values.loadBalancer.type "alb") (eq .Values.loadBalancer.type "gke") (eq .Values.loadBalancer.type "gke-managed-cert") (eq .Values.loadBalancer.type "do") (eq .Values.loadBalancer.type "gclb") (eq .Values.loadBalancer.type "hetzner")}}
   type: NodePort
   {{- else if eq .Values.loadBalancer.type "aws" }}
   type: LoadBalancer
@@ -28,13 +32,13 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-    {{- if and (or (eq .Values.loadBalancer.type "disable") (eq .Values.loadBalancer.type "gclb")) .Values.livekit.rtc.tcp_port }}
+    {{- if and (or (eq .Values.loadBalancer.type "disable") (eq .Values.loadBalancer.type "gclb") (eq .Values.loadBalancer.type "hetzner")) .Values.livekit.rtc.tcp_port }}
     - name: rtc-tcp
       port: {{ .Values.livekit.rtc.tcp_port }}
       protocol: TCP
       targetPort: rtc-tcp
     {{- end }}
-    {{- if and (or (eq .Values.loadBalancer.type "disable") (eq .Values.loadBalancer.type "gclb")) .Values.livekit.rtc.udp_port }}
+    {{- if and (or (eq .Values.loadBalancer.type "disable") (eq .Values.loadBalancer.type "gclb") (eq .Values.loadBalancer.type "hetzner")) .Values.livekit.rtc.udp_port }}
     - name: rtc-udp
       port: {{ .Values.livekit.rtc.udp_port }}
       protocol: UDP

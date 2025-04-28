@@ -31,8 +31,7 @@ livekit:
     # username:
     # password:
   # key value pairs (<api_key>: >api_secret>)
-  keys:
-    {}
+  keys: {}
   # Api keys can be loaded from a file
   # https://github.com/livekit/livekit/blob/6eaa300949cdfe8fbf6e2ded926c9f8c1a01bc61/pkg/config/config.go#L61
   # In order to set the api keys when using the key_file parameter configure the storeKeysInSecret block below
@@ -64,9 +63,16 @@ nameOverride: ""
 fullnameOverride: ""
 
 loadBalancer:
+  # Any of aws, gke, gke-managed-cert, gclb, disable, alb, do, hetzner
   type: disable
   servicePort: 80
-  annotations: {}
+  # Set when using hetzner cloud
+  ingressClassName: ""
+  # Set for externaldns annotations
+  extraAnnotations: {}
+  ingress:
+    # Set for cert-manger for example
+    annotations: {}
 
 turnLoadbalancer:
   enable: true

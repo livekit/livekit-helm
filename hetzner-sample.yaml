@@ -1,0 +1,103 @@
+# LiveKit Helm chart will set up a Deployment, Service, HPA, and Ingress as either
+# a single or multi-node LiveKit deployment.
+# After installing this chart, you would still need to
+# * Open ports on the firewall to the hosts (see https://docs.livekit.io/deploy/ports-firewall)
+# * Update DNS of hostnames to the ingress/service that were created
+
+replicaCount: 1
+
+# Suggested value for gracefully terminate the pod: 5 hours
+terminationGracePeriodSeconds: 18000
+
+livekit:
+  # port: 7880
+  # Uncomment to enable prometheus metrics
+  # prometheus_port: 6789
+  log_level: info
+  rtc:
+    use_external_ip: true
+    # default ports used
+    port_range_start: 50000
+    port_range_end: 60000
+    tcp_port: 7881
+  redis:
+    address: <redis_host:port>
+    # db: 0
+    # username:
+    # password:
+    # use_tls: true
+  # one or more API key/secret pairs
+  # see https://docs.livekit.io/guides/getting-started/#generate-api-key-and-secret
+  keys:
+    myapikey: "myapisecret"
+  turn:
+    enabled: true
+    # must match domain of your TLS cert
+    domain: turn.myhost.com
+    # tls_port must be 443 if turn load balancer is disabled
+    tls_port: 3478
+    # udp_port should be 443 for best connectivity through firewalls
+    udp_port: 443
+    # uncomment if you will manage TLS termination for TURN, secretName is not used
+    # when external_tls is set
+    # external_tls: true
+    # Kubernetes Secret containing TLS cert for <turn.myhost.com>
+    # See https://docs.livekit.io/deploy/kubernetes/#importing-ssl-certificates
+    secretName: <tlssecret>
+    # set the Kubernetes serviceType for the TURN service. By default it sets it to "LoadBalancer" but for Hetzner you want ClusterIP and use a custom ingress
+    # See kubernetes serviceTypes on official documentation: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    serviceType: "ClusterIP"
+
+loadBalancer:
+  # valid values: disable, alb, aws, gke, gke-managed-cert, gke-native-vpc, do, hetzner
+  # on AWS, we recommend using alb load balancer, which supports TLS termination
+  # * in order to use alb, aws-ingress-controller must be installed
+  #   https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
+  # * for gke-managed-cert type follow https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
+  #   and set staticIpName to your reserved static IP, and certificateName to be
+  #   name of the managed cert
+  # * for do uncomment clusterIssuer with your cert manager issuer
+  type: hetzner
+  # staticIpName: <nameofIpAddressCreated>
+  # certificateName: <nameOfCert>
+  # clusterIssuer: letsencrypt-prod
+  tls:
+  #   - hosts:
+  #     - livekit.myhost.com
+  #   with alb, certificates needs to reside in ACM for self-discovery
+  #   with do, use cert-manager and create certificate for turn. Load balancer is autoamtic
+  #   with gke, specify one or more secrets to use for the certificate
+  #   see: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl#specifying_certificates_for_your_ingress
+  #     secretName: <mysecret>
+
+  # Set the external DNS annotations for the load balancer here as Hetzner LB doesn't support UDP. So the load balancer is a NodePort meaning it is directly routing to the nodes.
+  extraAnnotations:
+    external-dns.alpha.kubernetes.io/hostname: livekit.myhost.com
+
+  # Ensure the ingress class name is set to the one used by your cluster
+  ingressClassName: nginx
+
+# autoscaling requires resources to be defined
+autoscaling:
+  # set to true to enable autoscaling. when set, ignores replicaCount
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+
+# if LiveKit should run only on specific nodes
+# this can be used to isolate designated nodes
+nodeSelector:
+  {}
+  # node.kubernetes.io/instance-type: c5.2xlarge
+
+resources:
+  {}
+  # Due to port restrictions, you can run only one instance of LiveKit per physical
+  # node. Because of that, we recommend giving it plenty of resources to work with
+  # limits:
+  #   cpu: 6000m
+  #   memory: 2048Mi
+  # requests:
+  #   cpu: 4000m
+  #   memory: 1024Mi
