@@ -1,0 +1,20 @@
+{{- if and .Values.podMonitor.create .Values.egress.prometheus_port -}}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ include "egress.podMonitorName" . }}
+  labels:
+    {{- include "egress.labels" . | nindent 4 }}
+  {{- with .Values.podMonitor.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  endpoints:
+    - port: metrics
+      path: /
+      interval: {{ .Values.podMonitor.interval }}
+  selector:
+    matchLabels:
+      {{- include "egress.selectorLabels" . | nindent 6 }}
+{{- end }}

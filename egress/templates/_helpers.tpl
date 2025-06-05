@@ -60,3 +60,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the name of the pod monitor to use
+*/}}
+{{- define "egress.podMonitorName" -}}
+{{- if .Values.podMonitor.create }}
+{{- default (include "egress.fullname" .) .Values.podMonitor.name }}
+{{- else }}
+{{- default "default" .Values.podMonitor.name }}
+{{- end }}
+{{- end }}

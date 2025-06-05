@@ -41,3 +41,14 @@ securityContext: {}
 tolerations: []
 
 affinity: {}
+
+podMonitor:
+  # Specifies whether a service monitor should be created
+  create: false
+  # Annotations to add to the service monitor
+  annotations: {}
+  # The name of the service monitor to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  # The scrape interval
+  interval: 30s

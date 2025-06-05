@@ -52,12 +52,12 @@ spec:
               containerPort: {{ .Values.ingress.http_relay_port }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.ingress.rtmp_port }}
+            {{- if and .Values.ingress.rtmp_port (gt (int .Values.ingress.rtmp_port) 0) }}
             - name: rtmp-port
               containerPort: {{ .Values.ingress.rtmp_port }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.ingress.whip_port }}
+            {{- if and .Values.ingress.whip_port (gt (int .Values.ingress.whip_port) 0) }}
             - name: whip-port
               containerPort: {{ .Values.ingress.whip_port }}
               protocol: TCP
