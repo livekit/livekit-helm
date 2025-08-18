@@ -47,6 +47,9 @@ livekit:
   # room: <default settings for new rooms>
   # region: <set for multi-region deploys>
 
+# Set this option to true if you want to generate your API keys and store them in a secret instead of the config file
+autoGenerateKeys: false
+
 # Set this option to true if you want to store your API keys in a secret instead of the config file
 storeKeysInSecret:
   enabled: false
