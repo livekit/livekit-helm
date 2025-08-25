@@ -60,6 +60,10 @@ storeKeysInSecret:
     {}
     # key value pairs (<api_key>: >api_secret>)
 
+# If set to true, a random redis password is automatically generated and passed to the configmap. This also creates a secret containing the `redis_password` key
+# to be passed to your instance of redis as an existingSecret.
+autoGenerateRedisPassword: false
+
 nameOverride: ""
 fullnameOverride: ""
 

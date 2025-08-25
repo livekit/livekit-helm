@@ -1,7 +1,28 @@
+{{- $redisPassword := randAlphaNum 50 }}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "livekit-server.fullname" . }}
 data:
   config.yaml: |
-{{ toYaml .Values.livekit | indent 4 }}
+{{- $livekit := deepCopy .Values.livekit }}
+{{- if .Values.autoGenerateRedisPassword }}
+{{-   $redis := default dict $livekit.redis }}
+{{- if not (empty $redis) }}
+{{-   $_ := set $redis "password" $redisPassword }}
+{{- end }}
+{{-   $livekit = merge $livekit (dict "redis" $redis) }}
+{{- end }}
+{{ toYaml $livekit | indent 4 }}
+---
+{{- if .Values.autoGenerateRedisPassword }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "livekit-server.fullname" . }}-redis
+  labels:
+    {{- include "livekit-server.labels" . | nindent 4 }}
+data:
+  redis_password: {{ $redisPassword | b64enc }}
+{{- end }}
