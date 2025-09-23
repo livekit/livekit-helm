@@ -92,13 +92,17 @@ spec:
             {{- if .Values.livekit.turn.tls_port }}
             - name: turn-tls
               containerPort: {{ .Values.livekit.turn.tls_port }}
-              hostPort: {{ .Values.livekit.turn.tls_port }}
+              {{- if .Values.podHostNetwork }}
+                hostPort: {{ .Values.livekit.turn.tls_port }}
+              {{- end }}
               protocol: TCP
             {{- end }}
             {{- if .Values.livekit.turn.udp_port }}
             - name: turn-udp
               containerPort: {{ .Values.livekit.turn.udp_port }}
-              hostPort: {{ .Values.livekit.turn.udp_port }}
+              {{- if .Values.podHostNetwork }}
+                hostPort: {{ .Values.livekit.turn.udp_port }}
+              {{- end }}
               protocol: UDP
             {{- end }}
             {{- end }}
