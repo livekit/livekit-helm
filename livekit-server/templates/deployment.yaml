@@ -21,10 +21,10 @@ spec:
   {{- end }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
         {{- include "livekit-server.selectorLabels" . | nindent 8 }}
@@ -68,7 +68,7 @@ spec:
             - name: rtc-udp
               containerPort: {{ .Values.livekit.rtc.udp_port }}
               {{- if .Values.podHostNetwork }}
-                hostPort: {{ .Values.livekit.rtc.udp_port }}
+              hostPort: {{ .Values.livekit.rtc.udp_port }}
               {{- end }}
               protocol: UDP
             {{- end }}
@@ -76,7 +76,7 @@ spec:
             - name: rtc-tcp
               containerPort: {{ .Values.livekit.rtc.tcp_port }}
               {{- if .Values.podHostNetwork }}
-                hostPort: {{ .Values.livekit.rtc.tcp_port }}
+              hostPort: {{ .Values.livekit.rtc.tcp_port }}
               {{- end }}
               protocol: TCP
             {{- end }}
@@ -84,7 +84,7 @@ spec:
             - name: metrics
               containerPort: {{ .Values.livekit.prometheus_port }}
               {{- if .Values.podHostNetwork }}
-                hostPort: {{ .Values.livekit.prometheus_port }}
+              hostPort: {{ .Values.livekit.prometheus_port }}
               {{- end }}
               protocol: TCP
             {{- end }}
@@ -93,7 +93,7 @@ spec:
             - name: turn-tls
               containerPort: {{ .Values.livekit.turn.tls_port }}
               {{- if .Values.podHostNetwork }}
-                hostPort: {{ .Values.livekit.turn.tls_port }}
+              hostPort: {{ .Values.livekit.turn.tls_port }}
               {{- end }}
               protocol: TCP
             {{- end }}
@@ -101,7 +101,7 @@ spec:
             - name: turn-udp
               containerPort: {{ .Values.livekit.turn.udp_port }}
               {{- if .Values.podHostNetwork }}
-                hostPort: {{ .Values.livekit.turn.udp_port }}
+              hostPort: {{ .Values.livekit.turn.udp_port }}
               {{- end }}
               protocol: UDP
             {{- end }}
