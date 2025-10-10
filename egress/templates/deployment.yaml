@@ -17,7 +17,7 @@ spec:
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
         {{- include "egress.selectorLabels" . | nindent 8 }}
     spec:
@@ -34,7 +34,7 @@ spec:
           env:
             - name: EGRESS_CONFIG_BODY
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: {{ include "egress.fullname" . }}
                   key: config.yaml
           ports:
