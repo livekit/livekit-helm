@@ -1,9 +1,0 @@
-helmGlobals:
-  chartHome: .
-
-helmCharts:
-  - name: livekit-stack            
-    releaseName: livekit-stack
-    namespace: livekit
-    valuesFile: ./livekit-stack/values.yaml
-    includeCRDs: true
