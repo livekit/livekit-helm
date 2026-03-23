@@ -1,21 +1,20 @@
 replicaCount: 2
 
 egress:
-  ws_url: <ws_url>
-  api_key: <api_key>
-  api_secret: <secret>
   log_level: info
   health_port: 8080
   prometheus_port: 9090
   redis:
     address: <redis_host:port>
   s3:
-    access_key: <access_key>
-    secret: <secret>
     region: "us-west-2"
     bucket: "my-egress"
 
-# Config (including api_key, api_secret, s3 credentials above) is stored in a
-# Kubernetes Secret by default. To use an externally managed secret instead:
-# storeSecretsInSecret:
-#   existingSecret: "my-egress-secret"
+  # Sensitive values — stored in a Kubernetes Secret, never in ConfigMap
+  secrets:
+    api_key: <api_key>
+    api_secret: <secret>
+    ws_url: <ws_url>
+    s3:
+      access_key: <access_key>
+      secret: <secret>

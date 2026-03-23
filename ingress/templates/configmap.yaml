@@ -1,4 +1,6 @@
-{{- if not .Values.storeSecretsInSecret.enabled }}
+{{- if not .Values.existingSecret }}
+{{- $config := deepCopy .Values.ingress }}
+{{- $_ := unset $config "secrets" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,5 +9,5 @@ metadata:
     {{- include "ingress.labels" . | nindent 4 }}
 data:
   config.yaml: |
-{{ toYaml .Values.ingress | indent 4 }}
+{{ toYaml $config | indent 4 }}
 {{- end }}

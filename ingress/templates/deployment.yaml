@@ -17,11 +17,8 @@ spec:
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        {{- if .Values.storeSecretsInSecret.enabled }}
-        {{- if not .Values.storeSecretsInSecret.existingSecret }}
+        {{- if not .Values.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
-        {{- end }}
-        {{- else }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
       labels:
@@ -44,15 +41,9 @@ spec:
           env:
             - name: INGRESS_CONFIG_BODY
               valueFrom:
-                {{- if .Values.storeSecretsInSecret.enabled }}
                 secretKeyRef:
-                  name: {{ .Values.storeSecretsInSecret.existingSecret | default (include "ingress.fullname" .) }}
+                  name: {{ .Values.existingSecret | default (include "ingress.fullname" .) }}
                   key: config.yaml
-                {{- else }}
-                configMapKeyRef:
-                  name: {{ include "ingress.fullname" . }}
-                  key: config.yaml
-                {{- end }}
           ports:
             {{- if .Values.ingress.health_port }}
             - name: health

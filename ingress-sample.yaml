@@ -4,9 +4,6 @@ replicaCount: 1
 terminationGracePeriodSeconds: 10800
 
 ingress:
-  api_key: "server-api-key"
-  api_secret: "server-api-secret"
-  ws_url: "ws://livekit-host:<port>"
   logging:
     level: info
   health_port: 7888
@@ -22,7 +19,6 @@ ingress:
     address: <redis_host:port>
     # db: 0
     # username:
-    # password:
     # use_tls: false
 
   cpu_cost:
@@ -32,6 +28,14 @@ ingress:
   # set the Kubernetes serviceType for the ingress service. By default it sets it to "LoadBalancer"
   # See kubernetes serviceTypes on official documentation: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   serviceType: "LoadBalancer"
+
+  # Sensitive values — stored in a Kubernetes Secret, not in ConfigMap
+  secrets:
+    api_key: "server-api-key"
+    api_secret: "server-api-secret"
+    ws_url: "ws://livekit-host:<port>"
+    redis:
+      password: ""
 
 # autoscaling requires resources to be defined
 autoscaling:
@@ -89,11 +93,6 @@ tolerations: []
 
 affinity: {}
 
-# By default, the entire ingress config (including api_key, api_secret) is stored
-# in a Kubernetes Secret rather than a ConfigMap.
-# Set enabled: false to use ConfigMap instead (not recommended for production).
-storeSecretsInSecret:
-  enabled: true
-  # Use a pre-existing secret (e.g. from External Secrets Operator or Vault)
-  # existingSecret: "my-ingress-secret"
+# Use a pre-existing secret for the full ingress config (e.g. from External Secrets Operator or Vault)
+# existingSecret: "my-ingress-secret"
 

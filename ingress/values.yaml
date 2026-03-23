@@ -26,6 +26,15 @@ ingress:
     whip_cpu_cost: 2
     whip_bypass_transcoding_cpu_cost: 0.1
 
+  # Sensitive values go under 'secrets' — these are stored in a Kubernetes Secret,
+  # never in the ConfigMap. The Secret merges these into the full config at deploy time.
+  secrets: {}
+    # api_key: ""
+    # api_secret: ""
+    # ws_url: ""
+    # redis:
+    #   password: ""
+
 loadBalancer:
   servicePort: 7888
   annotations: {}
@@ -61,9 +70,7 @@ tolerations: []
 
 affinity: {}
 
-# Store the entire ingress config (which contains api_key, api_secret) in a
-# Kubernetes Secret instead of a ConfigMap.
-storeSecretsInSecret:
-  enabled: true
-  # Use a pre-existing secret (e.g. from External Secrets Operator or Vault)
-  existingSecret: ""
+# Use a pre-existing secret for the full ingress config (e.g. from External Secrets Operator or Vault).
+# When set, neither the chart's Secret nor ConfigMap will contain config — the deployment reads
+# from this secret directly.
+existingSecret: ""
