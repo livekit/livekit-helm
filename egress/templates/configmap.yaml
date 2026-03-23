@@ -1,7 +1,11 @@
+{{- if not .Values.storeSecretsInSecret.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "egress.fullname" . }}
+  labels:
+    {{- include "egress.labels" . | nindent 4 }}
 data:
   config.yaml: |
 {{ toYaml .Values.egress | indent 4 }}
+{{- end }}

@@ -88,3 +88,12 @@ securityContext:
 tolerations: []
 
 affinity: {}
+
+# By default, the entire ingress config (including api_key, api_secret) is stored
+# in a Kubernetes Secret rather than a ConfigMap.
+# Set enabled: false to use ConfigMap instead (not recommended for production).
+storeSecretsInSecret:
+  enabled: true
+  # Use a pre-existing secret (e.g. from External Secrets Operator or Vault)
+  # existingSecret: "my-ingress-secret"
+

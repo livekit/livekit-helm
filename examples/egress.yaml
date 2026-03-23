@@ -14,3 +14,8 @@ egress:
     secret: <secret>
     region: "us-west-2"
     bucket: "my-egress"
+
+# Config (including api_key, api_secret, s3 credentials above) is stored in a
+# Kubernetes Secret by default. To use an externally managed secret instead:
+# storeSecretsInSecret:
+#   existingSecret: "my-egress-secret"

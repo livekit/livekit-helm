@@ -63,7 +63,6 @@ affinity: {}
 
 # Store the entire ingress config (which contains api_key, api_secret) in a
 # Kubernetes Secret instead of a ConfigMap.
-# This is strongly recommended for production deployments.
 storeSecretsInSecret:
   enabled: true
   # Use a pre-existing secret (e.g. from External Secrets Operator or Vault)
