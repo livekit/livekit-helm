@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+replicaCount: 2
 
 image:
   repository: livekit/ingress
@@ -59,4 +59,20 @@ securityContext: {}
 
 tolerations: []
 
-affinity: {}
+# Default anti-affinity spreads pods across nodes. This is a soft (preferred)
+# constraint so single-node clusters degrade gracefully to 1 replica.
+# With podHostNetwork: true, port conflicts already prevent two pods on the same
+# node, but anti-affinity makes the scheduling intent explicit.
+# Override this value to add custom affinity/anti-affinity rules.
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - ingress
+          topologyKey: kubernetes.io/hostname

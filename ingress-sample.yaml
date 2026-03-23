@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 2
 
 # Suggested value for gracefully terminate the pod: 3 hours
 terminationGracePeriodSeconds: 10800
