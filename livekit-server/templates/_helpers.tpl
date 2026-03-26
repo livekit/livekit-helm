@@ -62,6 +62,18 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
+Default hardened container security context.
+Used as the default for .Values.securityContext.
+*/}}
+{{- define "livekit-server.defaultSecurityContext" -}}
+runAsNonRoot: true
+readOnlyRootFilesystem: true
+allowPrivilegeEscalation: false
+capabilities:
+  drop: ["ALL"]
+{{- end }}
+
+{{/*
 Create the name of the service monitor to use
 */}}
 {{- define "livekit-server.serviceMonitorName" -}}

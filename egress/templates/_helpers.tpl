@@ -51,6 +51,19 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Default hardened container security context.
+Egress runs headless Chrome which needs a writable filesystem,
+so readOnlyRootFilesystem is set to false here.
+*/}}
+{{- define "egress.defaultSecurityContext" -}}
+runAsNonRoot: true
+readOnlyRootFilesystem: false
+allowPrivilegeEscalation: false
+capabilities:
+  drop: ["ALL"]
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "egress.serviceAccountName" -}}
