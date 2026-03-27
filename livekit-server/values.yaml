@@ -106,6 +106,12 @@ serviceAccount:
 
 podHostNetwork: true
 
+# Extra labels to add to pods. Useful for network policy selectors.
+# LiveKit uses host networking and wide port ranges, so it typically needs
+# to bypass CNI network policies (Calico, Cilium, etc.).
+podLabels: {}
+  # networking/allow-host-network: "true"
+
 podAnnotations:
   sidecar.istio.io/inject: "false"
   linkerd.io/inject: disabled
@@ -150,3 +156,10 @@ serviceMonitor:
   name: ""
   # The scrape interval
   interval: 30s
+
+# Pod Disruption Budget ensures minimum availability during voluntary disruptions
+# (node drains, cluster upgrades). Disabled by default — enable when running 2+ replicas.
+podDisruptionBudget:
+  enabled: false
+  # minAvailable: 1
+  # maxUnavailable: 1

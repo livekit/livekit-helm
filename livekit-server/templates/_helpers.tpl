@@ -36,6 +36,8 @@ Common labels
 {{- define "livekit-server.labels" -}}
 helm.sh/chart: {{ include "livekit-server.chart" . }}
 {{ include "livekit-server.selectorLabels" . }}
+app.kubernetes.io/component: sfu
+app.kubernetes.io/part-of: livekit
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
