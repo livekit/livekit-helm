@@ -1,4 +1,4 @@
-{{- if and (ne .Values.loadBalancer.type "disable") (ne .Values.loadBalancer.type "gclb") -}}
+{{- if and .Values.loadBalancer.ingress.enabled (ne .Values.loadBalancer.type "disable") (ne .Values.loadBalancer.type "gclb") (ne .Values.loadBalancer.type "azure") -}}
 {{- $fullName := include "livekit-server.fullname" . -}}
 {{- $svcPort := .Values.loadBalancer.servicePort -}}
 kind: Ingress

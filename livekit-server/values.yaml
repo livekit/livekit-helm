@@ -64,9 +64,14 @@ nameOverride: ""
 fullnameOverride: ""
 
 loadBalancer:
+  # type can be: disable, aws, alb, gke, gke-managed-cert, gke-vpc-native, do, gclb, azure
   type: disable
   servicePort: 80
   annotations: {}
+  # ingress.enabled controls the automatic generation of an Ingress resource.
+  # Set to false when using a dedicated LoadBalancer for media/RTC and a manual Ingress for Signal (Best Practice).
+  ingress:
+    enabled: true
 
 turnLoadbalancer:
   enable: true
