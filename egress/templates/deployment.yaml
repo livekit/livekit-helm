@@ -40,6 +40,18 @@ spec:
                 configMapKeyRef:
                   name: {{ include "egress.fullname" . }}
                   key: config.yaml
+            {{- if .Values.apiSecretRef }}
+            - name: LIVEKIT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.apiSecretRef }}
+                  key: livekit-api-key
+            - name: LIVEKIT_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.apiSecretRef }}
+                  key: livekit-api-secret
+            {{- end }}
             {{- if .Values.egress.gst_debug }}
             - name: GST_DEBUG
               value: "{{ .Values.egress.gst_debug }}"
