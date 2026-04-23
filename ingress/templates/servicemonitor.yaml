@@ -1,10 +1,10 @@
-{{- if and .Values.serviceMonitor.create (include "livekit-server.prometheus_port" .) -}}
+{{- if and .Values.serviceMonitor.create .Values.ingress.prometheus_port -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "livekit-server.serviceMonitorName" . }}
+  name: {{ include "ingress.serviceMonitorName" . }}
   labels:
-    {{- include "livekit-server.labels" . | nindent 4 }}
+    {{- include "ingress.labels" . | nindent 4 }}
   {{- with .Values.serviceMonitor.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -16,5 +16,5 @@ spec:
       interval: {{ .Values.serviceMonitor.interval }}
   selector:
     matchLabels:
-      {{- include "livekit-server.selectorLabels" . | nindent 6 }}
+      {{- include "ingress.selectorLabels" . | nindent 6 }}
 {{- end }}
