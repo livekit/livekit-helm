@@ -114,21 +114,59 @@ podSecurityContext:
   {}
   # fsGroup: 2000
 
+# Hardened container security context. Override as needed.
 securityContext:
-  {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  runAsNonRoot: true
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
 
 tolerations: []
 
 affinity: {}
 
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#deploymentstrategy-v1-apps
-deploymentStrategy: {}
+# maxSurge: 0 because host-network pods can't bind the same ports on the same node.
+deploymentStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+
+# Priority class for scheduling priority. Create the PriorityClass resource separately.
+# Example: priorityClassName: system-cluster-critical
+priorityClassName: ""
+
+# Lifecycle hooks. preStop gives load balancers and kube-proxy time to
+# deregister endpoints before SIGTERM is sent to the container.
+lifecycle:
+  preStop:
+    exec:
+      command: ["sleep", "300"]
+
+# Startup probe allows slow-starting containers to initialise before
+# liveness kicks in. failureThreshold * periodSeconds = max startup time.
+startupProbe:
+  httpGet:
+    path: /
+    port: http
+  failureThreshold: 30
+  periodSeconds: 5
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
 
 deploymentAnnotations: {}
 

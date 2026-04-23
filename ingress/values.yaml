@@ -55,8 +55,50 @@ podAnnotations:
 
 podSecurityContext: {}
 
+# Ingress may require elevated privileges depending on your setup.
+# Override as needed.
 securityContext: {}
 
 tolerations: []
 
 affinity: {}
+
+# maxSurge: 0 because host-network pods can't bind the same ports on the same node.
+deploymentStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+
+# Priority class for scheduling priority. Create the PriorityClass resource separately.
+priorityClassName: ""
+
+# Lifecycle hooks. preStop gives kube-proxy time to deregister endpoints
+# before SIGTERM is sent to the container.
+lifecycle:
+  preStop:
+    exec:
+      command: ["sleep", "300"]
+
+# Startup probe allows slow-starting containers to boot before liveness
+# kicks in. failureThreshold * periodSeconds = max startup time.
+startupProbe:
+  httpGet:
+    path: /
+    port: health
+  failureThreshold: 30
+  periodSeconds: 5
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: health
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: health
+  initialDelaySeconds: 5
+  periodSeconds: 5

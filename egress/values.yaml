@@ -36,8 +36,55 @@ podAnnotations:
 
 podSecurityContext: {}
 
-securityContext: {}
+# Hardened container security context. Egress runs headless Chrome which
+# needs a writable filesystem, so readOnlyRootFilesystem is false.
+securityContext:
+  runAsNonRoot: true
+  readOnlyRootFilesystem: false
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
 
 tolerations: []
 
 affinity: {}
+
+# Zero-downtime rolling update. Egress has no host networking so surge is safe.
+deploymentStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+# Priority class for scheduling priority. Create the PriorityClass resource separately.
+priorityClassName: ""
+
+# Lifecycle hooks. preStop gives kube-proxy time to deregister endpoints
+# before SIGTERM is sent to the container.
+lifecycle:
+  preStop:
+    exec:
+      command: ["sleep", "300"]
+
+# Startup probe allows slow-starting containers (Chrome init) to boot
+# before liveness kicks in. failureThreshold * periodSeconds = max startup time.
+startupProbe:
+  httpGet:
+    path: /
+    port: health
+  failureThreshold: 30
+  periodSeconds: 5
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: health
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: health
+  initialDelaySeconds: 5
+  periodSeconds: 5
