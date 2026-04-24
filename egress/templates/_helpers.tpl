@@ -36,6 +36,8 @@ Common labels
 {{- define "egress.labels" -}}
 helm.sh/chart: {{ include "egress.chart" . }}
 {{ include "egress.selectorLabels" . }}
+app.kubernetes.io/component: egress
+app.kubernetes.io/part-of: livekit
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}

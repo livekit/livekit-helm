@@ -34,6 +34,9 @@ podAnnotations:
   sidecar.istio.io/inject: "false"
   linkerd.io/inject: disabled
 
+# Extra labels to add to pods. Useful for network policy selectors.
+podLabels: {}
+
 podSecurityContext: {}
 
 securityContext: {}
@@ -41,3 +44,10 @@ securityContext: {}
 tolerations: []
 
 affinity: {}
+
+# Pod Disruption Budget ensures minimum availability during voluntary disruptions
+# (node drains, cluster upgrades). Disabled by default — enable when running 2+ replicas.
+podDisruptionBudget:
+  enabled: false
+  # minAvailable: 1
+  # maxUnavailable: 1
