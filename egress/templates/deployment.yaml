@@ -17,7 +17,10 @@ spec:
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        {{- if not .Values.existingSecret }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         {{- include "egress.selectorLabels" . | nindent 8 }}
     spec:
@@ -34,8 +37,8 @@ spec:
           env:
             - name: EGRESS_CONFIG_BODY
               valueFrom:
-                configMapKeyRef:
-                  name: {{ include "egress.fullname" . }}
+                secretKeyRef:
+                  name: {{ .Values.existingSecret | default (include "egress.fullname" .) }}
                   key: config.yaml
           ports:
             {{- if .Values.egress.health_port }}

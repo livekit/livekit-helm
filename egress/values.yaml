@@ -12,6 +12,21 @@ egress:
   log_level: info
   health_port: 8080
   prometheus_port: 9090
+  # Sensitive values go under 'secrets' — these are stored in a Kubernetes Secret,
+  # never in the ConfigMap. The Secret merges these into the full config at deploy time.
+  secrets: {}
+    # api_key: ""
+    # api_secret: ""
+    # ws_url: ""
+    # redis:
+    #   password: ""
+    # s3:
+    #   access_key: ""
+    #   secret: ""
+    # gcp:
+    #   credentials_json: ""
+    # azure:
+    #   account_key: ""
 
 terminationGracePeriodSeconds: 3600
 
@@ -39,5 +54,10 @@ podSecurityContext: {}
 securityContext: {}
 
 tolerations: []
+
+# Use a pre-existing secret for the full egress config (e.g. from External Secrets Operator or Vault).
+# When set, neither the chart's Secret nor ConfigMap will contain config — the deployment reads
+# from this secret directly.
+existingSecret: ""
 
 affinity: {}
