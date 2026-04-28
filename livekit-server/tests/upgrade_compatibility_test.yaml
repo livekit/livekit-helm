@@ -1,0 +1,76 @@
+suite: upgrade compatibility - ServiceMonitor render is byte-identical when serviceMonitor.labels is left at default
+#
+# Purpose
+# -------
+# Issue #97 added an opt-in field. Operators who do NOT set
+# serviceMonitor.labels must see no change in the rendered ServiceMonitor on
+# upgrade. This suite locks that contract in.
+#
+# How to reproduce the underlying before/after diff manually
+# ----------------------------------------------------------
+#   git checkout master -- livekit-server/templates/servicemonitor.yaml \
+#                          livekit-server/values.yaml
+#   helm template lk-test livekit-server/ \
+#       --set serviceMonitor.create=true \
+#       --set livekit.prometheus_port=6789 > /tmp/before.yaml
+#   git checkout HEAD -- livekit-server/templates/servicemonitor.yaml \
+#                        livekit-server/values.yaml
+#   helm template lk-test livekit-server/ \
+#       --set serviceMonitor.create=true \
+#       --set livekit.prometheus_port=6789 > /tmp/after.yaml
+#   diff -u /tmp/before.yaml /tmp/after.yaml
+#
+# Captured at commit time: empty diff. The new default serviceMonitor.labels
+# is an empty map and the {{- with .Values.serviceMonitor.labels }} guard
+# produces zero bytes when the map is empty, so the rendered output is
+# byte-identical to the prior chart.
+
+release:
+  name: lk-test
+  namespace: livekit
+tests:
+  - it: with serviceMonitor disabled (chart default), no ServiceMonitor renders
+    template: servicemonitor.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: with serviceMonitor enabled and labels at default, rendered metadata.labels equals exactly the chart-managed five
+    template: servicemonitor.yaml
+    set:
+      serviceMonitor.create: true
+      livekit.prometheus_port: 6789
+    asserts:
+      # Asserting deep-equality on metadata.labels guarantees: exactly five
+      # keys, no more, no fewer. If the new code path leaks anything when
+      # labels is the default empty map, this assertion fails.
+      - equal:
+          path: metadata.labels
+          value:
+            helm.sh/chart: livekit-server-1.11.0
+            app.kubernetes.io/name: livekit-server
+            app.kubernetes.io/instance: lk-test
+            app.kubernetes.io/version: v1.11.0
+            app.kubernetes.io/managed-by: Helm
+
+  - it: spec block is unchanged from prior chart for default configuration
+    template: servicemonitor.yaml
+    set:
+      serviceMonitor.create: true
+      livekit.prometheus_port: 6789
+    asserts:
+      - equal:
+          path: spec.endpoints[0].port
+          value: metrics
+      - equal:
+          path: spec.endpoints[0].path
+          value: /
+      - equal:
+          path: spec.endpoints[0].interval
+          value: 30s
+      - equal:
+          path: spec.selector.matchLabels["app.kubernetes.io/name"]
+          value: livekit-server
+      - equal:
+          path: spec.selector.matchLabels["app.kubernetes.io/instance"]
+          value: lk-test
