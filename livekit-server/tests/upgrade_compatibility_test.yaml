@@ -1,0 +1,175 @@
+suite: upgrade compatibility - default-values render before vs after
+#
+# Purpose
+# -------
+# Lock in what an existing operator's Deployment looks like after upgrading to
+# this chart commit with no values overrides. The motivating concern for #116
+# was that any change to probe defaults could subtly break in-flight sessions
+# on existing deployments. This suite documents the exact rendered delta.
+#
+# How to reproduce the underlying before/after diff manually
+# ----------------------------------------------------------
+#   git checkout HEAD~1 -- livekit-server/templates/deployment.yaml \
+#                          livekit-server/values.yaml
+#   helm template lk-test livekit-server/ > /tmp/before.yaml
+#   git checkout HEAD -- livekit-server/templates/deployment.yaml \
+#                        livekit-server/values.yaml
+#   helm template lk-test livekit-server/ > /tmp/after.yaml
+#   diff -u /tmp/before.yaml /tmp/after.yaml
+#
+# Diff captured at commit time
+# ----------------------------
+# Only the probe blocks change. No other rendered field shifts.
+#
+#   @@ ports/livekit-server container @@
+#            livenessProbe:
+#   +         failureThreshold: 3
+#              httpGet:
+#                path: /
+#                port: http
+#   +         initialDelaySeconds: 10
+#   +         periodSeconds: 10
+#   +         timeoutSeconds: 1
+#            readinessProbe:
+#   +         failureThreshold: 3
+#              httpGet:
+#                path: /
+#                port: http
+#   +         initialDelaySeconds: 0
+#   +         periodSeconds: 10
+#   +         timeoutSeconds: 1
+#
+# Behavioral interpretation
+# -------------------------
+# - failureThreshold: 3 was already the Kubernetes implicit default. Making it
+#   explicit changes the rendered YAML but not the runtime behavior.
+# - periodSeconds: 10 was already the Kubernetes implicit default. Same as above.
+# - timeoutSeconds: 1 was already the Kubernetes implicit default. Same.
+# - readinessProbe.initialDelaySeconds: 0 was already the Kubernetes implicit
+#   default. Same.
+# - livenessProbe.initialDelaySeconds: 0 -> 10 is the ONLY semantic change.
+#   This is strictly more lenient: the kubelet now waits 10s after container
+#   start before its first liveness check, instead of starting immediately.
+#   It cannot cause an existing healthy pod to be killed earlier than before.
+#
+# Net: zero risk of pod-killing regressions on upgrade with default values.
+# A one-time Deployment rollout will occur because the rendered probe spec
+# differs textually, but the new rollout's pods will pass probes at least as
+# reliably as the old rollout's pods did.
+
+release:
+  name: lk-test
+  namespace: livekit
+tests:
+  - it: post-change Deployment contains the exact set of explicit probe fields documented in the header diff
+    template: deployment.yaml
+    asserts:
+      # livenessProbe explicit fields
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.failureThreshold
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
+          value: /
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.initialDelaySeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.periodSeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.timeoutSeconds
+          value: 1
+      # readinessProbe explicit fields
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.failureThreshold
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.initialDelaySeconds
+          value: 0
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.periodSeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.timeoutSeconds
+          value: 1
+
+  - it: every rendered probe field matches the Kubernetes implicit default except livenessProbe.initialDelaySeconds (the one documented behavior change)
+    template: deployment.yaml
+    asserts:
+      # K8s implicit defaults for HTTPGetAction-based probes:
+      #   failureThreshold:    3
+      #   periodSeconds:       10
+      #   timeoutSeconds:      1
+      #   initialDelaySeconds: 0
+      # All values below match the K8s implicit default; the rendered YAML
+      # now shows them explicitly but Kubernetes would have applied the same
+      # numbers before this change.
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.failureThreshold
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.periodSeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.timeoutSeconds
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.failureThreshold
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.periodSeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.timeoutSeconds
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.initialDelaySeconds
+          value: 0
+      # The one and only documented semantic delta:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.initialDelaySeconds
+          value: 10
+      - notEqual:
+          path: spec.template.spec.containers[0].livenessProbe.initialDelaySeconds
+          value: 0
+
+  - it: non-probe fields rendered with default values are unchanged from prior chart behavior
+    template: deployment.yaml
+    asserts:
+      # Container identity, image, and ports must be untouched. If any of
+      # these flip, the regression is outside probe scope and this PR is too
+      # broad.
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: livekit-server
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: ^livekit/livekit-server:.+$
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].name
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 7880
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 18000
+      - equal:
+          path: spec.template.spec.hostNetwork
+          value: true
+      - equal:
+          path: spec.template.spec.dnsPolicy
+          value: ClusterFirstWithHostNet
