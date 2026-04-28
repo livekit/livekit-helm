@@ -145,6 +145,11 @@ serviceMonitor:
   create: false
   # Annotations to add to the service monitor
   annotations: {}
+  # Additional labels for the ServiceMonitor resource. Required by some
+  # Prometheus deployments. For example, kube-prometheus-stack expects
+  # 'release: prometheus' to discover ServiceMonitors. Set per your
+  # Prometheus serviceMonitorSelector configuration.
+  labels: {}
   # The name of the service monitor to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
