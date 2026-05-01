@@ -38,6 +38,15 @@ fullnameOverride: ""
 autoscaling:
   enabled: false
 
+# PodDisruptionBudget configuration
+# Helps maintain availability during voluntary disruptions (node draining, cluster autoscaling, etc.)
+# Recommended for production deployments with multiple replicas
+podDisruptionBudget:
+  enabled: false
+  # minAvailable: 1  # Minimum number of pods that must be available
+  # maxUnavailable: 1  # Maximum number of pods that can be unavailable
+  # Note: Use either minAvailable or maxUnavailable, not both
+
 nodeSelector: {}
 
 resources: {}
