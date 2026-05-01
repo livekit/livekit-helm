@@ -4,7 +4,7 @@
 # * Open ports on the firewall to the hosts (see https://docs.livekit.io/deploy/ports-firewall)
 # * Update DNS of hostnames to the ingress/service that were created
 
-replicaCount: 1
+replicaCount: 2
 
 # Suggested value for gracefully terminate the pod: 5 hours
 terminationGracePeriodSeconds: 18000
