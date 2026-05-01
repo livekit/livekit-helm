@@ -150,3 +150,7 @@ serviceMonitor:
   name: ""
   # The scrape interval
   interval: 30s
+
+  # The name of the secret to use.
+  # If not set and create is true, a name is generated using the fullname template
+  secretName: ""
