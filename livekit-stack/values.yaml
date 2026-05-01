@@ -1,0 +1,10 @@
+livekit-server:
+  replicaCount: 1
+  serviceAccount:
+    create: true
+
+ingress:
+  replicaCount: 1
+  
+egress:
+  replicaCount: 1
