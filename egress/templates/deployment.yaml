@@ -37,6 +37,13 @@ spec:
                 configMapKeyRef:
                   name: {{ include "egress.fullname" . }}
                   key: config.yaml
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             {{- if .Values.egress.health_port }}
             - name: health

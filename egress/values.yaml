@@ -13,6 +13,23 @@ egress:
   health_port: 8080
   prometheus_port: 9090
 
+# Additional environment variables for the egress container. Useful for
+# supplying credentials (e.g. LIVEKIT_API_KEY / LIVEKIT_API_SECRET, or
+# AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY for S3 uploads) from a Secret
+# instead of embedding them in the config ConfigMap.
+extraEnv: []
+  # - name: LIVEKIT_API_KEY
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: livekit-secrets
+  #       key: api-key
+
+# Additional envFrom sources (e.g. secretRef / configMapRef) applied to the
+# egress container.
+envFrom: []
+  # - secretRef:
+  #     name: livekit-secrets
+
 terminationGracePeriodSeconds: 3600
 
 nameOverride: ""
