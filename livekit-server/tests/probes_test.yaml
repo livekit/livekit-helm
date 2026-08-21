@@ -1,0 +1,98 @@
+suite: liveness and readiness probes
+# configmap.yaml is listed because deployment.yaml includes it for its
+# checksum annotation; assertions below target deployment.yaml only.
+templates:
+  - deployment.yaml
+  - configmap.yaml
+tests:
+  - template: deployment.yaml
+    it: does not make liveness depend on the redis-coupled health endpoint
+    # regression guard for https://github.com/livekit/livekit/issues/4663:
+    # `GET /` goes 406 on every node at once during a redis outage, which must
+    # not be able to restart the fleet
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.tcpSocket.port
+          value: http
+      - notExists:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet
+
+  - template: deployment.yaml
+    it: keeps readiness on the health endpoint, so stale nodes leave rotation
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: http
+
+  - template: deployment.yaml
+    it: gives the probes independent definitions
+    asserts:
+      - notEqual:
+          path: spec.template.spec.containers[0].livenessProbe
+          value:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+
+  - template: deployment.yaml
+    it: keeps the pre-existing 30s of failures before a liveness restart
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.periodSeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.failureThreshold
+          value: 3
+
+  - template: deployment.yaml
+    it: lets one probe be overridden without disturbing the other
+    set:
+      readinessProbe:
+        httpGet:
+          path: /readyz
+          port: http
+        failureThreshold: 1
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /readyz
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.failureThreshold
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.tcpSocket.port
+          value: http
+
+  - template: deployment.yaml
+    it: omits either probe when it is set to null
+    values:
+      - ./fixtures/no-probes.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].livenessProbe
+      - notExists:
+          path: spec.template.spec.containers[0].readinessProbe
+      - exists:
+          path: spec.template.spec.containers[0].image
+
+  - template: deployment.yaml
+    it: follows a custom livekit.port through the named port
+    set:
+      livekit.port: 8080
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8080
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.tcpSocket.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: http

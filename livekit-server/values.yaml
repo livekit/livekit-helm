@@ -95,6 +95,33 @@ resources:
   #   cpu: 4000m
   #   memory: 1024Mi
 
+# Liveness and readiness are deliberately different checks: a liveness failure
+# restarts the container, a readiness failure only removes the pod from Service
+# endpoints. Liveness is a TCP check because `GET /` reports stats staleness,
+# which on a redis deployment depends on a keepalive round-tripping through
+# redis -- sharing it would restart every pod at once during a redis outage.
+# See https://github.com/livekit/livekit/issues/4663. Set to `~` to omit.
+livenessProbe:
+  tcpSocket:
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 3
+
+# `GET /` is the right readiness check: it goes non-200 while the node's stats
+# are stale, so the node stops taking new sessions until it recovers. Point
+# this at a drain-aware endpoint (with failureThreshold: 1) if your server
+# build exposes one.
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 3
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
