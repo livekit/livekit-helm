@@ -82,6 +82,20 @@ autoscaling:
   targetCPUUtilizationPercentage: 60
   # targetMemoryUtilizationPercentage: 80
 
+# One DaemonSet + ConfigMap per LiveKit node when each node has its own
+# media VIP. Empty (default) keeps a single workload and shared config.
+# Each entry must pin a node and set node_ip to that node's passthrough VIP.
+# TURN/TLS stays on one Service (turnLoadbalancer) selecting every instance.
+instances: []
+  # - name: lk-0
+  #   node_ip: 203.0.113.10
+  #   nodeSelector:
+  #     kubernetes.io/hostname: k8s-worker-livekit-0
+  # - name: lk-1
+  #   node_ip: 203.0.113.11
+  #   nodeSelector:
+  #     kubernetes.io/hostname: k8s-worker-livekit-1
+
 # if LiveKit should run only on specific nodes
 # this can be used to isolate designated nodes
 nodeSelector:

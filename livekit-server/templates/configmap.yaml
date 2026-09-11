@@ -1,7 +1,23 @@
+{{- $root := . -}}
+{{- $instances := default list .Values.instances -}}
+{{- if eq (len $instances) 0 -}}
+{{- $instances = list (dict "name" "") -}}
+{{- end -}}
+{{- range $i, $inst := $instances }}
+{{- if $i }}
+---
+{{- end }}
+{{- $ctx := dict "root" $root "instance" $inst }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "livekit-server.fullname" . }}
+  name: {{ include "livekit-server.instanceFullname" $ctx }}
+  labels:
+    {{- include "livekit-server.labels" $root | nindent 4 }}
+    {{- if $inst.name }}
+    livekit.io/instance: {{ $inst.name | quote }}
+    {{- end }}
 data:
   config.yaml: |
-{{ toYaml .Values.livekit | indent 4 }}
+{{ include "livekit-server.instanceLivekitConfig" $ctx | indent 4 }}
+{{- end }}

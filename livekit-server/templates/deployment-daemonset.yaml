@@ -1,57 +1,82 @@
+{{- $root := . -}}
+{{- $instances := default list .Values.instances -}}
+{{- if eq (len $instances) 0 -}}
+{{- $instances = list (dict "name" "") -}}
+{{- end -}}
+{{- range $i, $inst := $instances }}
+{{- if $i }}
+---
+{{- end }}
+{{- $ctx := dict "root" $root "instance" $inst }}
+{{- $resName := include "livekit-server.instanceFullname" $ctx }}
+{{- $ns := dict }}
+{{- if $root.Values.nodeSelector }}
+{{- $ns = deepCopy $root.Values.nodeSelector }}
+{{- end }}
+{{- if and $inst $inst.nodeSelector }}
+{{- $ns = mergeOverwrite $ns $inst.nodeSelector }}
+{{- end }}
+{{- $tolerations := $root.Values.tolerations }}
+{{- if and $inst $inst.tolerations }}
+{{- $tolerations = $inst.tolerations }}
+{{- end }}
 apiVersion: apps/v1
-kind: {{ .Values.deploymentType }}
+kind: {{ $root.Values.deploymentType }}
 metadata:
-  name: {{ include "livekit-server.fullname" . }}
+  name: {{ $resName }}
   labels:
-    {{- include "livekit-server.labels" . | nindent 4 }}
-  {{- if .Values.deploymentAnnotations }}
+    {{- include "livekit-server.labels" $root | nindent 4 }}
+    {{- if $inst.name }}
+    livekit.io/instance: {{ $inst.name | quote }}
+    {{- end }}
+  {{- if $root.Values.deploymentAnnotations }}
   annotations:
-    {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
+    {{- toYaml $root.Values.deploymentAnnotations | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and (not .Values.autoscaling.enabled) (eq .Values.deploymentType "Deployment") }}
-  replicas: {{ .Values.replicaCount }}
+  {{- if and (not $root.Values.autoscaling.enabled) (eq $root.Values.deploymentType "Deployment") }}
+  replicas: {{ $root.Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "livekit-server.selectorLabels" . | nindent 6 }}
-  {{- if and (.Values.deploymentStrategy) (eq .Values.deploymentType "Deployment") }}
+      {{- include "livekit-server.instancePodLabels" $ctx | nindent 6 }}
+  {{- if and ($root.Values.deploymentStrategy) (eq $root.Values.deploymentType "Deployment") }}
   strategy:
-    {{- toYaml .Values.deploymentStrategy | nindent 4 }}
+    {{- toYaml $root.Values.deploymentStrategy | nindent 4 }}
   {{- end }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        {{- with $root.Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- end }}
+        checksum/config: {{ include "livekit-server.instanceLivekitConfig" $ctx | sha256sum }}
       labels:
-        {{- include "livekit-server.selectorLabels" . | nindent 8 }}
+        {{- include "livekit-server.instancePodLabels" $ctx | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with $root.Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "livekit-server.serviceAccountName" . }}
+      serviceAccountName: {{ include "livekit-server.serviceAccountName" $root }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if .Values.podHostNetwork }}
+        {{- toYaml $root.Values.podSecurityContext | nindent 8 }}
+      {{- if $root.Values.podHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
       {{- end }}
       enableServiceLinks: false
-      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ $root.Values.terminationGracePeriodSeconds }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ $root.Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+            {{- toYaml $root.Values.securityContext | nindent 12 }}
+          image: "{{ $root.Values.image.repository }}:{{ $root.Values.image.tag | default $root.Chart.AppVersion }}"
+          imagePullPolicy: {{ $root.Values.image.pullPolicy }}
           args:
             - "--disable-strict-config"
-            {{- if .Values.extraArgs }}
-            {{- range .Values.extraArgs }}
+            {{- if $root.Values.extraArgs }}
+            {{- range $root.Values.extraArgs }}
             - "{{ . }}"
             {{- end }}
             {{- end }}
@@ -59,9 +84,9 @@ spec:
             - name: LIVEKIT_CONFIG
               valueFrom:
                 configMapKeyRef:
-                  name: {{ include "livekit-server.fullname" . }}
+                  name: {{ $resName }}
                   key: config.yaml
-            {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
+            {{- if and $root.Values.livekit.turn.enabled $root.Values.livekit.turn.tls_port (not $root.Values.livekit.turn.external_tls) }}
             - name: LIVEKIT_TURN_CERT
               value: /etc/lkcert/tls.crt
             - name: LIVEKIT_TURN_KEY
@@ -69,37 +94,37 @@ spec:
             {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.livekit.port }}
+              containerPort: {{ $root.Values.livekit.port }}
               protocol: TCP
-            {{- if .Values.livekit.rtc.udp_port }}
+            {{- if $root.Values.livekit.rtc.udp_port }}
             - name: rtc-udp
-              containerPort: {{ .Values.livekit.rtc.udp_port }}
-              hostPort: {{ .Values.livekit.rtc.udp_port }}
+              containerPort: {{ $root.Values.livekit.rtc.udp_port }}
+              hostPort: {{ $root.Values.livekit.rtc.udp_port }}
               protocol: UDP
             {{- end }}
-            {{- if .Values.livekit.rtc.tcp_port }}
+            {{- if $root.Values.livekit.rtc.tcp_port }}
             - name: rtc-tcp
-              containerPort: {{ .Values.livekit.rtc.tcp_port }}
-              hostPort: {{ .Values.livekit.rtc.tcp_port }}
+              containerPort: {{ $root.Values.livekit.rtc.tcp_port }}
+              hostPort: {{ $root.Values.livekit.rtc.tcp_port }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.livekit.prometheus_port }}
+            {{- if $root.Values.livekit.prometheus_port }}
             - name: metrics
-              containerPort: {{ .Values.livekit.prometheus_port }}
-              hostPort: {{ .Values.livekit.prometheus_port }}
+              containerPort: {{ $root.Values.livekit.prometheus_port }}
+              hostPort: {{ $root.Values.livekit.prometheus_port }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.livekit.turn.enabled }}
-            {{- if .Values.livekit.turn.tls_port }}
+            {{- if $root.Values.livekit.turn.enabled }}
+            {{- if $root.Values.livekit.turn.tls_port }}
             - name: turn-tls
-              containerPort: {{ .Values.livekit.turn.tls_port }}
-              hostPort: {{ .Values.livekit.turn.tls_port }}
+              containerPort: {{ $root.Values.livekit.turn.tls_port }}
+              hostPort: {{ $root.Values.livekit.turn.tls_port }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.livekit.turn.udp_port }}
+            {{- if $root.Values.livekit.turn.udp_port }}
             - name: turn-udp
-              containerPort: {{ .Values.livekit.turn.udp_port }}
-              hostPort: {{ .Values.livekit.turn.udp_port }}
+              containerPort: {{ $root.Values.livekit.turn.udp_port }}
+              hostPort: {{ $root.Values.livekit.turn.udp_port }}
               protocol: UDP
             {{- end }}
             {{- end }}
@@ -112,43 +137,44 @@ spec:
               path: /
               port: http
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          {{- if or .Values.storeKeysInSecret.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
+            {{- toYaml $root.Values.resources | nindent 12 }}
+          {{- if or $root.Values.storeKeysInSecret.enabled (and $root.Values.livekit.turn.enabled $root.Values.livekit.turn.tls_port (not $root.Values.livekit.turn.external_tls)) }}
           volumeMounts:
-          {{- if .Values.storeKeysInSecret.enabled }}
+          {{- if $root.Values.storeKeysInSecret.enabled }}
             - name: keys-volume
               mountPath: /etc/livekit-keys
               readOnly: true
           {{- end }}
-          {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
+          {{- if and $root.Values.livekit.turn.enabled $root.Values.livekit.turn.tls_port (not $root.Values.livekit.turn.external_tls) }}
             - name: lkturncert
               mountPath: /etc/lkcert
               readOnly: true
           {{- end }}
           {{- end }}
-      {{- if or .Values.storeKeysInSecret.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
+      {{- if or $root.Values.storeKeysInSecret.enabled (and $root.Values.livekit.turn.enabled $root.Values.livekit.turn.tls_port (not $root.Values.livekit.turn.external_tls)) }}
       volumes:
-        {{- if .Values.storeKeysInSecret.enabled }}
+        {{- if $root.Values.storeKeysInSecret.enabled }}
         - name: keys-volume
           secret:
-            secretName: {{ (tpl .Values.storeKeysInSecret.existingSecret .) | default (include "livekit-server.fullname" .) }}
+            secretName: {{ (tpl $root.Values.storeKeysInSecret.existingSecret $root) | default (include "livekit-server.fullname" $root) }}
             defaultMode: 0600
       {{- end }}
-      {{- if and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls) }}
+      {{- if and $root.Values.livekit.turn.enabled $root.Values.livekit.turn.tls_port (not $root.Values.livekit.turn.external_tls) }}
         - name: lkturncert
           secret:
-            secretName: {{ required "tls secret required if turn enabled" .Values.livekit.turn.secretName }}
+            secretName: {{ required "tls secret required if turn enabled" $root.Values.livekit.turn.secretName }}
       {{- end }}
       {{- end }}
-      {{- with .Values.nodeSelector }}
+      {{- if $ns }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml $ns | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with $root.Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with $tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}
