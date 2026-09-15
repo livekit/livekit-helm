@@ -3,7 +3,7 @@ name: livekit-server
 description: Real-time infrastructure for developers. LiveKit is the open source stack for streaming audio, video, and data.
 type: application
 version: 1.11.0
-appVersion: "v1.10.4"
+appVersion: "v1.11.0"
 
 sources:
   - https://github.com/livekit/livekit
