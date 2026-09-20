@@ -84,6 +84,17 @@ nodeSelector:
   {}
   # node.kubernetes.io/instance-type: c5.2xlarge
 
+# Additional environment variables to set
+# Ref: https://github.com/livekit/livekit/blob/master/cmd/server/main.go
+extraEnvVars: []
+  # - name: CUSTOM_VAR
+  #   value: "custom-value"
+  # - name: REDIS_PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: my-secret
+  #       key: secret-key
+
 resources:
   {}
   # Due to port restrictions, you can run only one instance of LiveKit per physical
