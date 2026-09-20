@@ -47,6 +47,14 @@ autoscaling:
 #    metricName: my_metric_name
 #    targetAverageValue: 70
 
+# PodDisruptionBudget - recommended for production to maintain availability during node drains
+# Uncomment to enable:
+# podDisruptionBudget:
+#   enabled: true
+#   minAvailable: 1  # Keep at least 1 pod available during disruptions
+  # OR use maxUnavailable instead:
+  # maxUnavailable: 1  # Allow at most 1 pod to be unavailable
+
 # if ingress should run only on specific nodes
 # this can be used to isolate designated nodes
 nodeSelector: {}

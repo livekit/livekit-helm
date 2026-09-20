@@ -78,6 +78,13 @@ autoscaling:
   maxReplicas: 5
   targetCPUUtilizationPercentage: 60
 
+# PodDisruptionBudget, recommended for production to maintain availability during node drains
+# podDisruptionBudget:
+#   enabled: true
+#   minAvailable: 1  # Keep at least 1 pod available during disruptions
+  # OR use maxUnavailable instead:
+  # maxUnavailable: 1  # Allow at most 1 pod to be unavailable
+
 # if LiveKit should run only on specific nodes
 # this can be used to isolate designated nodes
 nodeSelector:
