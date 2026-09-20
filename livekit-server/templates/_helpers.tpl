@@ -71,3 +71,19 @@ Create the name of the service monitor to use
 {{- default "default" .Values.serviceMonitor.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the name of the service monitor secret to use
+*/}}
+{{- define "livekit-server.serviceMonitorSecretName" -}}
+{{- default (print (include "livekit-server.fullname" .) "-service-monitor-secret") .Values.serviceMonitor.secretName }}
+{{- end }}
+
+{{/*
+Load prometheus port from old or new config
+*/}}
+{{- define "livekit-server.prometheus_port" -}}
+{{- if or .Values.livekit.prometheus_port (and .Values.livekit.prometheus .Values.livekit.prometheus.port) }}
+{{- default .Values.livekit.prometheus_port .Values.livekit.prometheus.port }}
+{{- end }}
+{{- end }}
