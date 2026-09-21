@@ -143,6 +143,8 @@ gcp:
 serviceMonitor:
   # Specifies whether a service monitor should be created
   create: false
+  # Labels to add to the service monitor
+  labels: {}
   # Annotations to add to the service monitor
   annotations: {}
   # The name of the service monitor to use.
