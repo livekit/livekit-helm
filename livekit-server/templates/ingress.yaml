@@ -1,4 +1,4 @@
-{{- if and (ne .Values.loadBalancer.type "disable") (ne .Values.loadBalancer.type "gclb") -}}
+{{- if and (ne .Values.loadBalancer.type "disable") (ne .Values.loadBalancer.type "gclb") (eq .Values.ingress.enable true) -}}
 {{- $fullName := include "livekit-server.fullname" . -}}
 {{- $svcPort := .Values.loadBalancer.servicePort -}}
 kind: Ingress
@@ -13,7 +13,7 @@ metadata:
   {{- end }}
   # AWS ALB
   {{- if eq .Values.loadBalancer.type "alb" }}
-    kubernetes.io/ingress.class: alb
+    kubernetes.io/ingress.class: {{ default "alb" .Values.ingress.ingressClass }}
     alb.ingress.kubernetes.io/scheme: internet-facing
     {{- if .Values.loadBalancer.tls }}
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
@@ -23,7 +23,7 @@ metadata:
   {{- if eq .Values.loadBalancer.type "gke-managed-cert" }}
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.loadBalancer.staticIpName }}
     networking.gke.io/managed-certificates: {{ or .Values.loadBalancer.certificateName "managed-cert" }}
-    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.class: {{ default "gce" .Values.ingress.ingressClass }}
   {{- end }}
   # DO with cert manager
   {{- if eq .Values.loadBalancer.type "do" }}
@@ -36,7 +36,7 @@ apiVersion: extensions/v1beta1
 {{- end }}
 spec:
   {{- if eq .Values.loadBalancer.type "do" }}
-  ingressClassName: nginx
+  ingressClassName: {{ default "nginx" .Values.ingress.ingressClass }}
   {{- end }}
   rules:
   # In order to work with cert manager on DO, we cannot set us as a default backend

@@ -63,6 +63,11 @@ storeKeysInSecret:
 nameOverride: ""
 fullnameOverride: ""
 
+ingress:
+  enable: true
+  # Uncomment to override ingressClass from the default
+  # ingressClass: traefik
+
 loadBalancer:
   type: disable
   servicePort: 80
