@@ -1,0 +1,8 @@
+serviceMonitor:
+  create: true
+  labels:
+    release: prometheus
+    team: platform
+    environment: production
+livekit:
+  prometheus_port: 6789
