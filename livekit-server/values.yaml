@@ -104,6 +104,10 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+# By default, the `hostNetwork: true` is used for the pods. This means that the pods
+# receive the IP address of the node and not a private one from kubernetes.
+# There may be constellations in which this must be disabled. But it is not recommended.
+# Be careful as this leads to single port UDP usage and can lead to performance losses.
 podHostNetwork: true
 
 podAnnotations:
