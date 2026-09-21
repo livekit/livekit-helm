@@ -132,6 +132,60 @@ deploymentStrategy: {}
 
 deploymentAnnotations: {}
 
+# Liveness and readiness probes for the livekit-server container.
+#
+# These are intentionally exposed as separate, fully structured blocks so that
+# operators can tune them independently. In particular, livenessProbe and
+# readinessProbe should NOT share the same definition: a liveness failure
+# restarts the pod, while a readiness failure only removes it from Service
+# endpoints. Conflating the two means any condition that should drain traffic
+# also kills the pod and any in-flight sessions.
+#
+# A common reason to override readinessProbe (without touching livenessProbe)
+# is graceful shutdown / connection draining. During the
+# terminationGracePeriodSeconds window, livekit-server continues serving
+# existing WebRTC sessions but should stop receiving new ones. If your build
+# of livekit-server (or a sidecar) exposes a separate "drain" or "ready"
+# endpoint that flips to non-200 once SIGTERM is received, point the
+# readinessProbe at that endpoint here so Kubernetes removes the pod from
+# Service endpoints immediately while the liveness probe keeps the pod alive
+# for the rest of the grace period.
+#
+# Defaults below probe the HTTP healthcheck on the livekit port (named port
+# "http", which resolves to livekit.port, 7880 by default). Using the named
+# port means probes automatically track any livekit.port override; if you
+# replace the httpGet block entirely (e.g. with tcpSocket or exec) you take
+# over responsibility for the port reference.
+#
+# Setting livenessProbe or readinessProbe to null (e.g. "livenessProbe: ~")
+# omits that probe from the rendered Deployment entirely.
+#
+# Test coverage for these values lives in livekit-server/tests/. The
+# probe_configuration_test.yaml suite exercises defaults, partial overrides,
+# null/omit behavior, and the named-port contract; if you change either probe
+# here, run "helm unittest livekit-server/" to confirm your override matches
+# expectations before deploying.
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  timeoutSeconds: 1
+  # Matches the Kubernetes default. Lower this (e.g. to 1) when you point the
+  # readinessProbe at a drain-aware endpoint and want pods removed from the
+  # Service immediately on the first non-200 response.
+  failureThreshold: 3
+
 # Specifies configuration gke backendconfig
 gcp:
   backendConfig:

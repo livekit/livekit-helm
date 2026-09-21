@@ -1,0 +1,184 @@
+suite: liveness and readiness probe configuration
+release:
+  name: lk-test
+  namespace: livekit
+tests:
+  # ---------------------------------------------------------------------------
+  # Scenario A: default values
+  # ---------------------------------------------------------------------------
+  - it: A1. default livenessProbe targets / on the named http port
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
+          value: /
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: http
+
+  - it: A2. default readinessProbe targets / on the named http port
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: http
+
+  - it: A3. default readinessProbe.failureThreshold is 3 (Kubernetes default, not the previously considered value of 1)
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.failureThreshold
+          value: 3
+
+  - it: A4. default livenessProbe.failureThreshold is 3
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.failureThreshold
+          value: 3
+
+  - it: A5. livenessProbe and readinessProbe are independently rendered (different default values prove they are not a shared fragment)
+    template: deployment.yaml
+    asserts:
+      # initialDelaySeconds is 10 for liveness, 0 for readiness by default.
+      # If they were rendered from a single shared fragment they could not differ.
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.initialDelaySeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.initialDelaySeconds
+          value: 0
+      - notEqual:
+          path: spec.template.spec.containers[0].livenessProbe.initialDelaySeconds
+          value: 0
+
+  # ---------------------------------------------------------------------------
+  # Scenario B: partial override on each probe
+  # ---------------------------------------------------------------------------
+  - it: B1. partial overrides apply only to the touched fields, defaults survive elsewhere
+    template: deployment.yaml
+    set:
+      readinessProbe.httpGet.path: /readyz
+      readinessProbe.failureThreshold: 5
+      livenessProbe.failureThreshold: 10
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /readyz
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.failureThreshold
+          value: 5
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.failureThreshold
+          value: 10
+      # Other readinessProbe defaults must survive the partial override
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.periodSeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.timeoutSeconds
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.initialDelaySeconds
+          value: 0
+      # livenessProbe defaults must survive when only readiness is touched
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
+          value: /
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.initialDelaySeconds
+          value: 10
+
+  # ---------------------------------------------------------------------------
+  # Scenario C: both probes nulled out
+  # ---------------------------------------------------------------------------
+  - it: C1. setting both probes to null omits both fields from the rendered Deployment
+    template: deployment.yaml
+    values:
+      - ./fixtures/null_both_probes.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].livenessProbe
+      - notExists:
+          path: spec.template.spec.containers[0].readinessProbe
+      # Container, image, and ports must still be intact
+      - exists:
+          path: spec.template.spec.containers[0]
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: livekit-server
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: ^livekit/livekit-server:.+$
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].name
+          value: http
+
+  # ---------------------------------------------------------------------------
+  # Scenario D: mixed null - one probe disabled, the other at defaults
+  # ---------------------------------------------------------------------------
+  - it: D1. liveness null + readiness default - readiness present, liveness omitted
+    template: deployment.yaml
+    values:
+      - ./fixtures/null_liveness_only.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].livenessProbe
+      - exists:
+          path: spec.template.spec.containers[0].readinessProbe
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: http
+
+  - it: D2. readiness null + liveness default - liveness present, readiness omitted
+    template: deployment.yaml
+    values:
+      - ./fixtures/null_readiness_only.yaml
+    asserts:
+      - exists:
+          path: spec.template.spec.containers[0].livenessProbe
+      - notExists:
+          path: spec.template.spec.containers[0].readinessProbe
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
+          value: /
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: http
+
+  # ---------------------------------------------------------------------------
+  # Scenario E: custom livekit.port - probes follow named port, not numeric
+  # ---------------------------------------------------------------------------
+  - it: E1. probes target named port http even when livekit.port is non-default
+    template: deployment.yaml
+    set:
+      livekit.port: 19880
+    asserts:
+      # The HTTP container port number changes
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 19880
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].name
+          value: http
+      # Probes still reference the name "http", not the number 19880.
+      # This documents the contract: operators changing livekit.port do NOT
+      # need to also update probe ports.
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: http
+      - notEqual:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: 19880
