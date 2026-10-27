@@ -3,7 +3,7 @@ name: egress
 description: Egress is used by LiveKit to stream and record rooms.
 type: application
 version: 1.14.1
-appVersion: "v1.14.1
+appVersion: "v1.14.1"
 
 sources:
   - https://github.com/livekit/egress
