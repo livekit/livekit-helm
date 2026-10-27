@@ -60,6 +60,13 @@ spec:
             - name: LIVEKIT_TURN_KEY
               value: /etc/lkcert/tls.key
             {{- end }}
+            {{- with .Values.extraEnv }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.extraEnvFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.livekit.port }}
@@ -106,7 +113,7 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if or .Values.storeKeysInSecret.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
+          {{- if or .Values.storeKeysInSecret.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) .Values.extraVolumeMounts }}
           volumeMounts:
           {{- if .Values.storeKeysInSecret.enabled }}
             - name: keys-volume
@@ -118,8 +125,11 @@ spec:
               mountPath: /etc/lkcert
               readOnly: true
           {{- end }}
+          {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- if or .Values.storeKeysInSecret.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) }}
+          {{- end }}
+      {{- if or .Values.storeKeysInSecret.enabled (and .Values.livekit.turn.enabled .Values.livekit.turn.tls_port (not .Values.livekit.turn.external_tls)) .Values.extraVolumes }}
       volumes:
         {{- if .Values.storeKeysInSecret.enabled }}
         - name: keys-volume
@@ -131,6 +141,9 @@ spec:
         - name: lkturncert
           secret:
             secretName: {{ required "tls secret required if turn enabled" .Values.livekit.turn.secretName }}
+      {{- end }}
+      {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}

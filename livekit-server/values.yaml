@@ -10,6 +10,38 @@ image:
 
 imagePullSecrets: []
 
+# Extra environment variables for the livekit-server container.
+# Use this to inject secrets via valueFrom.secretKeyRef without baking
+# them into the plaintext ConfigMap. LiveKit substitutes ${VAR} in its
+# YAML config at startup, so you can reference these from livekit.* below.
+extraEnv: []
+# - name: REDIS_PASSWORD
+#   valueFrom:
+#     secretKeyRef:
+#       name: my-redis-secret
+#       key: password
+
+# Extra envFrom sources (e.g. envFrom an existing Secret in bulk).
+extraEnvFrom: []
+# - secretRef:
+#     name: livecircle-external-env-secrets
+
+# Extra volumes to attach to the pod. Useful for mounting CA certificate
+# bundles, additional config files, etc.
+extraVolumes: []
+# - name: redis-ca
+#   secret:
+#     secretName: my-secret
+#     items:
+#       - key: REDIS_CA_CERT
+#         path: ca.crt
+
+# Extra volumeMounts for the livekit-server container. Pair with extraVolumes.
+extraVolumeMounts: []
+# - name: redis-ca
+#   mountPath: /etc/redis-ca
+#   readOnly: true
+
 terminationGracePeriodSeconds: 18000
 
 # configuration for livekit
