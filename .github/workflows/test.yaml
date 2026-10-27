@@ -45,7 +45,7 @@ jobs:
         run: |-
           ct lint \
             --all \
-            --chart-dirs egress ingress livekit-server \
+            --chart-dirs . \
             --validate-maintainers=false
 
       - name: Create k8s cluster
@@ -62,4 +62,4 @@ jobs:
         run: |-
           ct install \
             --all \
-            --chart-dirs egress ingress livekit-server
+            --chart-dirs .
