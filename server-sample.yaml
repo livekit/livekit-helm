@@ -9,6 +9,14 @@ replicaCount: 1
 # Suggested value for gracefully terminate the pod: 5 hours
 terminationGracePeriodSeconds: 18000
 
+# Probes are configured independently; see values.yaml for the defaults.
+# Take the pod out of rotation as soon as it starts draining:
+# readinessProbe:
+#   httpGet:
+#     path: /readyz
+#     port: http
+#   failureThreshold: 1
+
 livekit:
   # port: 7880
   # Uncomment to enable prometheus metrics

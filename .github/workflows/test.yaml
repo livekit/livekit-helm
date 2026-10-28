@@ -41,6 +41,12 @@ jobs:
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.6.1
 
+      - name: Run chart unit tests
+        run: |-
+          # helm 4 requires --verify=false on this source; helm is pinned to 3.x above
+          helm plugin install https://github.com/helm-unittest/helm-unittest --version v1.0.2
+          helm unittest livekit-server
+
       - name: Run chart-testing (lint)
         run: |-
           ct lint \
