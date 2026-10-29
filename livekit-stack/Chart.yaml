@@ -1,0 +1,17 @@
+apiVersion: v2
+name: livekit-stack
+description: A unified chart deploying LiveKit server, ingress, and egress.
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+dependencies:
+  - name: livekit-server
+    version: 1.9.0
+    repository: "file://../livekit-server"
+  - name: ingress
+    version: 1.4.3
+    repository: "file://../ingress"
+  - name: egress
+    version: 1.9.0
+    repository: "file://../egress"
