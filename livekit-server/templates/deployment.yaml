@@ -67,32 +67,42 @@ spec:
             {{- if .Values.livekit.rtc.udp_port }}
             - name: rtc-udp
               containerPort: {{ .Values.livekit.rtc.udp_port }}
+              {{- if .Values.podHostNetwork }}
               hostPort: {{ .Values.livekit.rtc.udp_port }}
+              {{- end }}
               protocol: UDP
             {{- end }}
             {{- if .Values.livekit.rtc.tcp_port }}
             - name: rtc-tcp
               containerPort: {{ .Values.livekit.rtc.tcp_port }}
+              {{- if .Values.podHostNetwork }}
               hostPort: {{ .Values.livekit.rtc.tcp_port }}
+              {{- end }}
               protocol: TCP
             {{- end }}
             {{- if .Values.livekit.prometheus_port }}
             - name: metrics
               containerPort: {{ .Values.livekit.prometheus_port }}
+              {{- if .Values.podHostNetwork }}
               hostPort: {{ .Values.livekit.prometheus_port }}
+              {{- end }}
               protocol: TCP
             {{- end }}
             {{- if .Values.livekit.turn.enabled }}
             {{- if .Values.livekit.turn.tls_port }}
             - name: turn-tls
               containerPort: {{ .Values.livekit.turn.tls_port }}
+              {{- if .Values.podHostNetwork }}
               hostPort: {{ .Values.livekit.turn.tls_port }}
+              {{- end }}
               protocol: TCP
             {{- end }}
             {{- if .Values.livekit.turn.udp_port }}
             - name: turn-udp
               containerPort: {{ .Values.livekit.turn.udp_port }}
+              {{- if .Values.podHostNetwork }}
               hostPort: {{ .Values.livekit.turn.udp_port }}
+              {{- end }}
               protocol: UDP
             {{- end }}
             {{- end }}
