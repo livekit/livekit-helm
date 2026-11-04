@@ -104,6 +104,9 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+# Extra environment variables for the LiveKit Server container.
+extraEnv: []
+
 podHostNetwork: true
 
 podAnnotations:

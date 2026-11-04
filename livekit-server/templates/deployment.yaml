@@ -60,6 +60,9 @@ spec:
             - name: LIVEKIT_TURN_KEY
               value: /etc/lkcert/tls.key
             {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.livekit.port }}
