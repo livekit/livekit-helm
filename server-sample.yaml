@@ -9,6 +9,20 @@ replicaCount: 1
 # Suggested value for gracefully terminate the pod: 5 hours
 terminationGracePeriodSeconds: 18000
 
+# Liveness and readiness probes are configured separately so that the
+# readinessProbe can be pointed at a drain-aware endpoint without affecting
+# the livenessProbe (which would otherwise kill draining pods).
+# The defaults in the chart probe / on the http port for both. Override here
+# only if you need different behavior, e.g.:
+#
+# readinessProbe:
+#   httpGet:
+#     path: /rtc/validate   # or whatever drain-aware endpoint your build exposes
+#     port: http
+#   initialDelaySeconds: 0
+#   periodSeconds: 5
+#   failureThreshold: 1
+
 livekit:
   # port: 7880
   # Uncomment to enable prometheus metrics
