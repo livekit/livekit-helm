@@ -1,0 +1,181 @@
+suite: ServiceMonitor configurable labels
+release:
+  name: lk-test
+  namespace: livekit
+tests:
+  # ---------------------------------------------------------------------------
+  # Scenario A: default values
+  # ---------------------------------------------------------------------------
+  - it: A1. ServiceMonitor is NOT rendered when serviceMonitor.create is false (chart default)
+    template: servicemonitor.yaml
+    asserts:
+      # The template guards on `if and .Values.serviceMonitor.create
+      # .Values.livekit.prometheus_port`. With both at chart defaults
+      # (create=false, prometheus_port unset) nothing should render.
+      - hasDocuments:
+          count: 0
+
+  - it: A2. ServiceMonitor renders with chart-managed labels intact when enabled with no custom labels
+    template: servicemonitor.yaml
+    set:
+      serviceMonitor.create: true
+      livekit.prometheus_port: 6789
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: ServiceMonitor
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: livekit-server
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: lk-test
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - matchRegex:
+          path: metadata.labels["helm.sh/chart"]
+          pattern: ^livekit-server-.+$
+      - exists:
+          path: metadata.labels["app.kubernetes.io/version"]
+
+  - it: A3. with default serviceMonitor.labels (empty map), no labels appear beyond chart-managed five
+    template: servicemonitor.yaml
+    set:
+      serviceMonitor.create: true
+      livekit.prometheus_port: 6789
+    asserts:
+      # The five chart-managed label keys are: helm.sh/chart,
+      # app.kubernetes.io/name, app.kubernetes.io/instance,
+      # app.kubernetes.io/version, app.kubernetes.io/managed-by.
+      # If the new field accidentally injected anything when empty, this
+      # test would catch it.
+      - equal:
+          path: metadata.labels
+          value:
+            helm.sh/chart: livekit-server-1.11.0
+            app.kubernetes.io/name: livekit-server
+            app.kubernetes.io/instance: lk-test
+            app.kubernetes.io/version: v1.11.0
+            app.kubernetes.io/managed-by: Helm
+
+  # ---------------------------------------------------------------------------
+  # Scenario B: single label override
+  # ---------------------------------------------------------------------------
+  - it: B1. setting serviceMonitor.labels.release adds the label without dropping chart-managed labels
+    template: servicemonitor.yaml
+    set:
+      serviceMonitor.create: true
+      livekit.prometheus_port: 6789
+      serviceMonitor.labels.release: prometheus
+    asserts:
+      - equal:
+          path: metadata.labels.release
+          value: prometheus
+      # Chart-managed labels still present
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: livekit-server
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: lk-test
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - exists:
+          path: metadata.labels["helm.sh/chart"]
+      - exists:
+          path: metadata.labels["app.kubernetes.io/version"]
+
+  # ---------------------------------------------------------------------------
+  # Scenario C: multiple label override
+  # ---------------------------------------------------------------------------
+  - it: C1. three custom labels all render alongside chart-managed labels with no overwrites
+    template: servicemonitor.yaml
+    values:
+      - ./fixtures/labels_three.yaml
+    asserts:
+      # Three custom labels present
+      - equal:
+          path: metadata.labels.release
+          value: prometheus
+      - equal:
+          path: metadata.labels.team
+          value: platform
+      - equal:
+          path: metadata.labels.environment
+          value: production
+      # Chart-managed labels still intact and unchanged
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: livekit-server
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: lk-test
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - matchRegex:
+          path: metadata.labels["helm.sh/chart"]
+          pattern: ^livekit-server-.+$
+
+  # ---------------------------------------------------------------------------
+  # Scenario D: kube-prometheus-stack realistic config
+  # ---------------------------------------------------------------------------
+  - it: D1. rendered ServiceMonitor matches kube-prometheus-stack default selector (release=prometheus)
+    template: servicemonitor.yaml
+    set:
+      serviceMonitor.create: true
+      livekit.prometheus_port: 6789
+      serviceMonitor.labels.release: prometheus
+    asserts:
+      # kube-prometheus-stack installs Prometheus with
+      #   spec.serviceMonitorSelector.matchLabels.release = <helm-release-name>
+      # The default helm release name is "prometheus", giving a selector of
+      # release=prometheus. A ServiceMonitor with metadata.labels.release=prometheus
+      # will be discovered.
+      - equal:
+          path: metadata.labels.release
+          value: prometheus
+      - isKind:
+          of: ServiceMonitor
+      - equal:
+          path: apiVersion
+          value: monitoring.coreos.com/v1
+      # Spec must remain valid for Prometheus to actually scrape
+      - equal:
+          path: spec.endpoints[0].port
+          value: metrics
+      - equal:
+          path: spec.endpoints[0].path
+          value: /
+      - equal:
+          path: spec.endpoints[0].interval
+          value: 30s
+      - equal:
+          path: spec.selector.matchLabels["app.kubernetes.io/name"]
+          value: livekit-server
+
+  # ---------------------------------------------------------------------------
+  # Scenario E: empty override
+  # ---------------------------------------------------------------------------
+  - it: E1. explicitly empty serviceMonitor.labels produces output identical to default (no malformed labels block)
+    template: servicemonitor.yaml
+    values:
+      - ./fixtures/labels_empty.yaml
+    asserts:
+      # Same five labels as Scenario A3, no more, no less
+      - equal:
+          path: metadata.labels
+          value:
+            helm.sh/chart: livekit-server-1.11.0
+            app.kubernetes.io/name: livekit-server
+            app.kubernetes.io/instance: lk-test
+            app.kubernetes.io/version: v1.11.0
+            app.kubernetes.io/managed-by: Helm
+      # Sanity: rendered doc is structurally a ServiceMonitor, not malformed
+      - isKind:
+          of: ServiceMonitor
+      - exists:
+          path: spec.endpoints

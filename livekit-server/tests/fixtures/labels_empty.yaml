@@ -1,0 +1,5 @@
+serviceMonitor:
+  create: true
+  labels: {}
+livekit:
+  prometheus_port: 6789
