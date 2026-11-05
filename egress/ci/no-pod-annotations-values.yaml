@@ -1,0 +1,2 @@
+# Removes the default pod annotations.
+podAnnotations: null
